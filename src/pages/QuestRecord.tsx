@@ -106,6 +106,14 @@ const QuestRecord = () => {
 
   return (
     <article className="max-w-2xl mx-auto px-5 md:px-10 py-10">
+      <StarTrailCelebration
+        show={celebrating}
+        subtitle={`「${quest.title}」· 落进了你的「${m.terrain}」`}
+        onDone={() => {
+          setCelebrating(false);
+          setStep("echo");
+        }}
+      />
       <Link to={`/quest/${quest.id}`} className="font-hand text-sm text-muted-foreground hover:text-foreground">
         ← 回到副本
       </Link>
