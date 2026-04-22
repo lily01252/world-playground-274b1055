@@ -79,17 +79,25 @@ const QuestRecord = () => {
 
           <div className="flex gap-3 justify-center flex-wrap">
             <Button
-              onClick={() => navigate("/inner")}
+              onClick={() =>
+                navigate(
+                  `/map?surface=inner&lit=${innerPos.x},${innerPos.y}&cat=${quest.category}`,
+                )
+              }
               className="bg-foreground text-background rounded-sm"
             >
-              去内心地形看一眼
+              ✦ 去内心地图看光点亮起
             </Button>
             <Button
-              onClick={() => navigate("/map")}
+              onClick={() =>
+                navigate(
+                  `/map?surface=world&lit=${litPos.x},${litPos.y}&place=${encodeURIComponent(place || quest.title)}`,
+                )
+              }
               variant="outline"
               className="border-2 border-foreground rounded-sm"
             >
-              去外部地图看一眼
+              🗺️ 去外部地图看光点亮起
             </Button>
             <Button
               onClick={() => navigate("/")}
@@ -103,6 +111,17 @@ const QuestRecord = () => {
       </article>
     );
   }
+
+  // 简单 hash 把地点映射到地图坐标（mock）
+  const placeHash = (s: string) => {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+    const x = 15 + (Math.abs(h) % 70);
+    const y = 15 + (Math.abs(h >> 8) % 60);
+    return { x, y };
+  };
+  const litPos = placeHash(place || quest.title);
+  const innerPos = placeHash(quest.id + feeling);
 
   return (
     <article className="max-w-2xl mx-auto px-5 md:px-10 py-10">

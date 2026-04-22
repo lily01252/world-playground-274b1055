@@ -1,9 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { CATEGORY_META, MAP_PLACES, RECORDS } from "@/data/world";
 
 // 外部世界地图：抽象大陆 + 已点亮足迹 + 迷雾
 const WorldMap = () => {
   const litRecords = RECORDS.filter((r) => r.mapPos);
+  const [params] = useSearchParams();
+  const lit = params.get("lit")?.split(",");
+  const newPlace = params.get("place");
+  const [showNew, setShowNew] = useState(false);
+
+  useEffect(() => {
+    if (lit && lit.length === 2) {
+      setShowNew(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      const t = setTimeout(() => setShowNew(false), 6500);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
+
 
   return (
     <article className="max-w-6xl mx-auto px-5 md:px-10 py-8">
@@ -106,7 +122,29 @@ const WorldMap = () => {
             </span>
           ))}
 
-          {/* 罗盘 */}
+          {/* 新光点亮起动画 — 来自记录页跳转 */}
+          {showNew && lit && (
+            <div
+              className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
+              style={{ left: `${lit[0]}%`, top: `${lit[1]}%` }}
+            >
+              {/* 多层光晕 */}
+              <span className="absolute inset-0 -m-12 rounded-full bg-[hsl(var(--gold))]/30 animate-[litPulse_2s_ease-out_infinite]" />
+              <span className="absolute inset-0 -m-6 rounded-full bg-[hsl(var(--gold-bright))]/40 animate-[litPulse_2s_ease-out_0.3s_infinite]" />
+              <span className="block w-4 h-4 rounded-full bg-[hsl(var(--gold-bright))] border-2 border-[hsl(var(--cream))] shadow-[0_0_20px_4px_hsl(var(--gold)/0.8)] relative" />
+              <span className="absolute left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap font-hand text-xs bg-foreground text-background px-2 py-1 rounded-sm animate-fade-in">
+                ✦ {newPlace || "新足迹"} · 已点亮
+              </span>
+              <style>{`
+                @keyframes litPulse {
+                  0% { transform: scale(0.6); opacity: 0.9; }
+                  100% { transform: scale(2.4); opacity: 0; }
+                }
+              `}</style>
+            </div>
+          )}
+
+
           <div className="absolute bottom-3 right-3 w-14 h-14 rounded-full border-2 border-foreground bg-card/90 flex items-center justify-center font-serif-en text-xs">
             <span className="absolute top-1 text-[10px]">N</span>
             <span>✦</span>

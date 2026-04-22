@@ -72,19 +72,21 @@ export const GOALS: Goal[] = [
   },
 ];
 
-// 好友圈：邀请制 + 自选广场 双轨
+// 好友搭子：长期/可拆解的事 — 旅行、备考、健身……
+// 邀请制（定向） + 广场自选（公开）双轨
 export type FriendQuest = {
   id: string;
-  kind: "invite" | "open"; // 邀请制 / 广场自选
+  kind: "invite" | "open";
   author: { name: string; avatar: string };
   title: string;
   desc: string;
   category: QuestCategory;
   place?: string;
   date: string;
-  // 邀请制：被邀请的好友
+  // 长期项：预估周期 / 拆出几个里程碑
+  duration?: string;
+  milestones?: string[];
   invitees?: { name: string; avatar: string; status: "pending" | "joined" | "declined" }[];
-  // 广场制：已加入的人
   joiners?: { name: string; avatar: string }[];
   capacity?: number;
 };
@@ -93,54 +95,108 @@ export const FRIEND_QUESTS: FriendQuest[] = [
   {
     id: "fq-001",
     kind: "open",
-    author: { name: "小柯", avatar: "🐱" },
-    title: "想去吃潇湘阁",
-    desc: "周五晚上，谁要一起？据说他们的剁椒鱼头能吃哭人。",
+    author: { name: "阿原", avatar: "🦊" },
+    title: "找大理旅行搭子",
+    desc: "5 月初有 4 天假，节奏慢一点，想找一两个人一起住民宿、骑行、看日落。",
     category: "flourish",
-    place: "潇湘阁 · 文三路店",
-    date: "本周五 19:00",
-    joiners: [
-      { name: "阿原", avatar: "🦊" },
-      { name: "Tina", avatar: "🐻" },
-    ],
-    capacity: 6,
+    place: "大理",
+    date: "5 月 1 - 4 日",
+    duration: "4 天 · 1 次出发",
+    milestones: ["定行程", "订机票酒店", "出发", "回来写小记"],
+    joiners: [{ name: "你", avatar: "✦" }],
+    capacity: 3,
   },
   {
     id: "fq-002",
     kind: "open",
-    author: { name: "阿原", avatar: "🦊" },
-    title: "想去大理旅游",
-    desc: "5 月初有 4 天假，想找一两个人一起，节奏慢一点。",
-    category: "flourish",
-    place: "大理",
-    date: "5 月 1 - 4 日",
-    joiners: [{ name: "你", avatar: "✦" }],
+    author: { name: "Lin", avatar: "🦉" },
+    title: "找雅思搭子（目标 7）",
+    desc: "想找 1 - 2 个人组个小群，每周固定打卡口语、互相批作文。",
+    category: "courage",
+    place: "线上 · 每周日",
+    date: "持续 3 个月",
+    duration: "约 12 周",
+    milestones: ["定学习计划", "每周口语对练", "全真模考", "出分"],
+    joiners: [{ name: "Tina", avatar: "🐻" }],
     capacity: 3,
   },
   {
     id: "fq-003",
     kind: "invite",
     author: { name: "Mo", avatar: "🐼" },
-    title: "周日早晨去爬城北山",
-    desc: "想试试 6 点出发看日出，邀请你一起。",
+    title: "一起备战半马",
+    desc: "想 8 月跑一次半马，邀你做训练搭子。每周末长距离 + 一次配速训练。",
     category: "courage",
-    place: "城北山",
-    date: "周日 06:00",
+    place: "城北体育场 + 滨江",
+    date: "5 月 - 8 月",
+    duration: "约 16 周",
+    milestones: ["10km 不停", "15km 完成", "半马模拟", "正式比赛"],
     invitees: [{ name: "你", avatar: "✦", status: "pending" }],
   },
   {
     id: "fq-004",
     kind: "invite",
     author: { name: "你", avatar: "✦" },
-    title: "周六下午一起画画",
-    desc: "在家随便画，谁带颜料谁带饼干。",
+    title: "一起共创一本小册子",
+    desc: "三个月，一人写一章，最后凑成一本送给彼此。",
     category: "create",
-    place: "我家",
-    date: "周六 14:00",
+    place: "线上协作",
+    date: "5 月 - 7 月",
+    duration: "约 12 周",
+    milestones: ["定主题", "每月一章", "互改", "成册"],
     invitees: [
       { name: "小柯", avatar: "🐱", status: "joined" },
       { name: "Tina", avatar: "🐻", status: "pending" },
     ],
+  },
+];
+
+// 小型即时社交副本：吃饭、共读、看电影—— 放在「今日副本」上下文里
+export type SocialQuest = {
+  id: string;
+  author: { name: string; avatar: string };
+  title: string;
+  desc: string;
+  category: QuestCategory;
+  place: string;
+  date: string;
+  joiners: { name: string; avatar: string }[];
+  capacity: number;
+};
+
+export const SOCIAL_QUESTS: SocialQuest[] = [
+  {
+    id: "sq-001",
+    author: { name: "小柯", avatar: "🐱" },
+    title: "想去吃潇湘阁",
+    desc: "周五晚上，谁要一起？据说他们的剁椒鱼头能吃哭人。",
+    category: "flourish",
+    place: "潇湘阁 · 文三路店",
+    date: "本周五 19:00",
+    joiners: [{ name: "阿原", avatar: "🦊" }, { name: "Tina", avatar: "🐻" }],
+    capacity: 6,
+  },
+  {
+    id: "sq-002",
+    author: { name: "Tina", avatar: "🐻" },
+    title: "周六下午共读半小时",
+    desc: "随便带本书来，谁也不用说话。读完聊 10 分钟。",
+    category: "solitude",
+    place: "山顶书店",
+    date: "周六 15:00",
+    joiners: [{ name: "你", avatar: "✦" }],
+    capacity: 4,
+  },
+  {
+    id: "sq-003",
+    author: { name: "Mo", avatar: "🐼" },
+    title: "今晚一起看《在路上》",
+    desc: "线上同步看，弹幕聊。",
+    category: "create",
+    place: "线上",
+    date: "今晚 21:00",
+    joiners: [],
+    capacity: 8,
   },
 ];
 
