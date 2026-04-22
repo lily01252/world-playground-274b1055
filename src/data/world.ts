@@ -95,7 +95,7 @@ export const QUESTS: Quest[] = [
   },
 ];
 
-export type Record = {
+export type JourneyRecord = {
   id: string;
   date: string; // ISO
   weather: "☀️" | "⛅" | "🌧️" | "🌙";
@@ -112,7 +112,7 @@ export type Record = {
   innerPos?: { x: number; y: number };
 };
 
-export const RECORDS: Record[] = [
+export const RECORDS: JourneyRecord[] = [
   {
     id: "r-1",
     date: "2026-04-20",
