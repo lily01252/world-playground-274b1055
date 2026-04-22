@@ -89,7 +89,7 @@ const Goals = () => {
                   : "bg-transparent hover:bg-secondary"
               }`}
             >
-              {t === "mine" ? "我的目标" : "好友圈"}
+              {t === "mine" ? "我的目标" : "找搭子"}
             </button>
           ))}
         </div>
@@ -255,23 +255,24 @@ const FriendsCircle = () => {
       {posting ? (
         <section className="ink-card p-5 mb-6">
           <p className="font-hand text-sm text-muted-foreground mb-2">
-            ✧ 发到好友圈 · 让大家自选加入
+            ✧ 发到搭子广场 · 让大家自选加入
           </p>
           <Textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="想去吃潇湘阁 / 周末想爬山 / 想找人一起读书……"
+            placeholder="想找大理旅行搭子 / 找雅思 7 搭子 / 想 8 月跑半马……"
             rows={3}
             className="bg-card border-foreground/40 mb-3"
           />
           <div className="flex gap-2 flex-wrap items-center">
             <span className="ink-tag font-hand">📍 地点</span>
-            <span className="ink-tag font-hand">📅 时间</span>
+            <span className="ink-tag font-hand">📅 周期</span>
             <span className="ink-tag font-hand">👥 人数</span>
+            <span className="ink-tag font-hand">✦ AI 拆里程碑</span>
             <Button
               onClick={() => {
-                if (!draft.trim()) return toast("写一句你想做的事。");
-                toast("已发到好友圈。");
+                if (!draft.trim()) return toast("写一句你想找搭子做的事。");
+                toast("已发到搭子广场。");
                 setDraft("");
                 setPosting(false);
               }}
@@ -287,18 +288,18 @@ const FriendsCircle = () => {
             onClick={() => setPosting(true)}
             className="dashed-frame p-4 text-left hover:bg-secondary/40 transition-colors rounded-sm"
           >
-            <p className="font-hand text-sm">📣 发到好友圈</p>
+            <p className="font-hand text-sm">📣 发到搭子广场</p>
             <p className="text-xs text-muted-foreground mt-1">
-              "想去……"——谁想来谁加入
+              "想找……搭子"——可拆解的长期事
             </p>
           </button>
           <button
-            onClick={() => toast("挑一个朋友，邀请 ta 一起做某个副本。")}
+            onClick={() => toast("挑一个朋友，邀请 ta 一起完成一件事。")}
             className="dashed-frame p-4 text-left hover:bg-secondary/40 transition-colors rounded-sm"
           >
-            <p className="font-hand text-sm">✉️ 邀请某个朋友</p>
+            <p className="font-hand text-sm">✉️ 定向邀请朋友</p>
             <p className="text-xs text-muted-foreground mt-1">
-              定向邀请 · 一起完成一个副本
+              一对一 · 一起做一件长期的事
             </p>
           </button>
         </div>
@@ -322,7 +323,7 @@ const FriendsCircle = () => {
                   <div>
                     <p className="font-hand text-sm">{fq.author.name}</p>
                     <p className="text-[10px] text-muted-foreground tracking-widest">
-                      {isInvite ? "✉️ 定向邀请" : "📣 好友圈广场"}
+                      {isInvite ? "✉️ 定向邀请" : "📣 搭子广场"}
                     </p>
                   </div>
                 </div>
@@ -342,7 +343,27 @@ const FriendsCircle = () => {
               <div className="text-xs text-muted-foreground space-y-1 mb-3">
                 {fq.place && <p>📍 {fq.place}</p>}
                 <p>🕐 {fq.date}</p>
+                {fq.duration && <p>⏳ 预估 {fq.duration}</p>}
               </div>
+
+              {/* 里程碑预览 */}
+              {fq.milestones && fq.milestones.length > 0 && (
+                <div className="dashed-frame p-2.5 mb-3">
+                  <p className="font-hand text-[11px] text-muted-foreground mb-1.5">
+                    ✧ AI 已拆出 {fq.milestones.length} 个里程碑
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {fq.milestones.map((mi, i) => (
+                      <span
+                        key={i}
+                        className="text-[11px] px-1.5 py-0.5 bg-secondary/60 rounded-sm"
+                      >
+                        {i + 1}. {mi}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* 参与者 */}
               <div className="flex items-center gap-2 mb-4">
