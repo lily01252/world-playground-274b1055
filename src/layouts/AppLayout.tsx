@@ -3,9 +3,9 @@ import { PLAYER } from "@/data/world";
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { to: "/", label: "今日副本", en: "Today" },
-  { to: "/map", label: "外部世界", en: "World" },
-  { to: "/inner", label: "内心地形", en: "Inner" },
+  { to: "/", label: "今日", en: "Today" },
+  { to: "/goals", label: "目标关卡", en: "Goals" },
+  { to: "/map", label: "地图", en: "Map" },
   { to: "/chronicle", label: "编年史", en: "Chronicle" },
 ];
 

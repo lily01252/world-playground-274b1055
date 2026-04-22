@@ -5,8 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import AppLayout from "./layouts/AppLayout";
 import Today from "./pages/Today";
-import WorldMap from "./pages/WorldMap";
-import InnerTerrain from "./pages/InnerTerrain";
+import Goals from "./pages/Goals";
+import MapHub from "./pages/MapHub";
 import Chronicle from "./pages/Chronicle";
 import QuestDetail from "./pages/QuestDetail";
 import QuestRecord from "./pages/QuestRecord";
@@ -23,8 +23,8 @@ const App = () => (
         <Routes>
           <Route element={<AppLayout />}>
             <Route path="/" element={<Today />} />
-            <Route path="/map" element={<WorldMap />} />
-            <Route path="/inner" element={<InnerTerrain />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/map" element={<MapHub />} />
             <Route path="/chronicle" element={<Chronicle />} />
             <Route path="/quest/:id" element={<QuestDetail />} />
             <Route path="/quest/:id/record" element={<QuestRecord />} />
