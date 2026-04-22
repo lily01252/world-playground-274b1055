@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CATEGORY_META, QUESTS, RECORDS, PLAYER } from "@/data/world";
+import { SOCIAL_QUESTS } from "@/data/goals";
+import { toast } from "sonner";
 
 const Today = () => {
   const main = QUESTS[1]; // 主线副本：勇气
@@ -114,6 +116,64 @@ const Today = () => {
                 {q.difficulty} · +{q.xp} XP
               </p>
             </Link>
+          );
+        })}
+      </div>
+
+      {/* 小型社交副本 · 吃饭 / 共读 / 看电影 */}
+      <h3 className="font-serif-en text-lg mb-4 flex items-center gap-3">
+        要不要顺便加入一件小事
+        <span className="flex-1 h-px bg-secondary" />
+        <Link to="/goals" className="font-hand text-sm text-muted-foreground hover:text-foreground">
+          找长期搭子 →
+        </Link>
+      </h3>
+      <div className="grid md:grid-cols-3 gap-4 mb-12">
+        {SOCIAL_QUESTS.map((sq) => {
+          const m = CATEGORY_META[sq.category];
+          return (
+            <div key={sq.id} className="ink-card p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-7 h-7 rounded-full border-2 border-foreground bg-secondary flex items-center justify-center text-sm">
+                  {sq.author.avatar}
+                </div>
+                <p className="font-hand text-xs">
+                  {sq.author.name} 想{" "}
+                  <span style={{ color: m.color }}>{m.emoji}</span>
+                </p>
+              </div>
+              <h4 className="font-serif-en text-base leading-snug mb-1">
+                {sq.title}
+              </h4>
+              <p className="text-xs text-foreground/70 leading-relaxed line-clamp-2 mb-2">
+                {sq.desc}
+              </p>
+              <p className="font-hand text-[11px] text-muted-foreground mb-3">
+                📍 {sq.place} · 🕐 {sq.date}
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex -space-x-1.5">
+                  {sq.joiners.slice(0, 4).map((p, i) => (
+                    <div
+                      key={i}
+                      className="w-5 h-5 rounded-full border border-foreground bg-card flex items-center justify-center text-[10px]"
+                      title={p.name}
+                    >
+                      {p.avatar}
+                    </div>
+                  ))}
+                  <span className="ml-2 font-hand text-[11px] text-muted-foreground self-center">
+                    {sq.joiners.length}/{sq.capacity}
+                  </span>
+                </div>
+                <button
+                  onClick={() => toast("我也去！已加入。")}
+                  className="text-xs font-hand px-2 py-1 border border-foreground rounded-sm hover:bg-foreground hover:text-background transition-colors"
+                >
+                  ✦ 加入
+                </button>
+              </div>
+            </div>
           );
         })}
       </div>
