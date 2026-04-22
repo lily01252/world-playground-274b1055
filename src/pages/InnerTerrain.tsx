@@ -1,8 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { CATEGORY_META, INNER_REGIONS, RECORDS, type QuestCategory } from "@/data/world";
 
 // 内心地形图：抽象的心境地理 — 火山 / 苔原 / 光林 / 深湖
 const InnerTerrain = () => {
+  const [params] = useSearchParams();
+  const lit = params.get("lit")?.split(",");
+  const cat = params.get("cat") as QuestCategory | null;
+  const [showNew, setShowNew] = useState(false);
+
+  useEffect(() => {
+    if (lit && lit.length === 2) {
+      setShowNew(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      const t = setTimeout(() => setShowNew(false), 6500);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
+
   return (
     <article className="max-w-6xl mx-auto px-5 md:px-10 py-8">
       <header className="flex items-end justify-between mb-6 flex-wrap gap-3">
