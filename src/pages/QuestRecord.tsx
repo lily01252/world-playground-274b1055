@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { CATEGORY_META, QUESTS } from "@/data/world";
 import { toast } from "sonner";
+import StarTrailCelebration from "@/components/StarTrailCelebration";
 
 const FEELINGS = ["轻盈", "平静", "沉重", "混沌", "明亮"] as const;
 type Feeling = (typeof FEELINGS)[number];
@@ -19,6 +20,7 @@ const QuestRecord = () => {
   const [place, setPlace] = useState("");
   const [feeling, setFeeling] = useState<Feeling>("平静");
   const [step, setStep] = useState<"write" | "echo">("write");
+  const [celebrating, setCelebrating] = useState(false);
 
   // 简单的 mock "AI 回声"——实际接入时换成 Lovable AI Gateway
   const mockEcho = () => {
@@ -35,7 +37,7 @@ const QuestRecord = () => {
       toast("写一个字也好，或者点跳过。");
       return;
     }
-    setStep("echo");
+    setCelebrating(true);
   };
 
   if (step === "echo") {
