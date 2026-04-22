@@ -32,7 +32,7 @@ const QuestRecord = () => {
 
   const submit = () => {
     if (!text.trim()) {
-      toast("写一个字也好，或者点"不想写"。");
+      toast("写一个字也好，或者点『不想写』。");
       return;
     }
     setStep("echo");

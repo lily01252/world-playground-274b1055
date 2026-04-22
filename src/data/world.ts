@@ -88,7 +88,7 @@ export const QUESTS: Quest[] = [
     id: "q-005",
     category: "courage",
     title: "拒绝一件不想做的事",
-    desc: "今天有一件你想说"不"的事吗？说出口。",
+    desc: "今天有一件你想说『不』的事吗？说出口。",
     difficulty: "难",
     xp: 60,
     status: "available",
