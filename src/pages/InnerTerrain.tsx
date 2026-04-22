@@ -160,6 +160,39 @@ const InnerTerrain = () => {
               </button>
             );
           })}
+
+          {/* 新光点亮起动画 */}
+          {showNew && lit && (
+            <div
+              className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
+              style={{ left: `${lit[0]}%`, top: `${lit[1]}%` }}
+            >
+              <span
+                className="absolute inset-0 -m-12 rounded-full animate-[litPulse_2s_ease-out_infinite]"
+                style={{ background: cat ? `${CATEGORY_META[cat].color}` : "hsl(var(--gold))", opacity: 0.25 }}
+              />
+              <span
+                className="absolute inset-0 -m-6 rounded-full animate-[litPulse_2s_ease-out_0.3s_infinite]"
+                style={{ background: cat ? `${CATEGORY_META[cat].color}` : "hsl(var(--gold-bright))", opacity: 0.45 }}
+              />
+              <span
+                className="block w-3.5 h-3.5 rounded-full border-2 border-[hsl(var(--cream))] relative"
+                style={{
+                  background: cat ? CATEGORY_META[cat].color : "hsl(var(--gold-bright))",
+                  boxShadow: `0 0 18px 3px ${cat ? CATEGORY_META[cat].color : "hsl(var(--gold))"}`,
+                }}
+              />
+              <span className="absolute left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap font-hand text-[11px] bg-foreground text-background px-2 py-0.5 rounded-sm animate-fade-in">
+                ✦ {cat ? `${CATEGORY_META[cat].emoji} ${CATEGORY_META[cat].terrain}长出了新光点` : "新印记"}
+              </span>
+              <style>{`
+                @keyframes litPulse {
+                  0% { transform: scale(0.6); opacity: 0.9; }
+                  100% { transform: scale(2.4); opacity: 0; }
+                }
+              `}</style>
+            </div>
+          )}
         </div>
       </div>
 
