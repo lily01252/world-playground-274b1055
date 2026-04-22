@@ -1,9 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { CATEGORY_META, MAP_PLACES, RECORDS } from "@/data/world";
 
 // 外部世界地图：抽象大陆 + 已点亮足迹 + 迷雾
 const WorldMap = () => {
   const litRecords = RECORDS.filter((r) => r.mapPos);
+  const [params] = useSearchParams();
+  const lit = params.get("lit")?.split(",");
+  const newPlace = params.get("place");
+  const [showNew, setShowNew] = useState(false);
+
+  useEffect(() => {
+    if (lit && lit.length === 2) {
+      setShowNew(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      const t = setTimeout(() => setShowNew(false), 6500);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
+
 
   return (
     <article className="max-w-6xl mx-auto px-5 md:px-10 py-8">
