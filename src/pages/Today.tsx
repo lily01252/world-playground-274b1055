@@ -255,14 +255,14 @@ const Today = () => {
       </div>
 
       {/* 连击 + 心魔 — 旅途的呼吸与阴影 */}
-      <h3 className="font-serif-en text-lg mt-12 mb-4 flex items-center gap-3">
+      <h3 className="font-serif-en text-lg mt-10 mb-4 flex items-center gap-3">
         旅途的呼吸
         <span className="flex-1 h-px bg-secondary" />
-        <span className="font-hand text-xs text-muted-foreground tracking-wider">
+        <span className="font-hand text-xs text-muted-foreground tracking-wider whitespace-nowrap">
           节奏 · 阴影
         </span>
       </h3>
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4 items-stretch">
         <StreakLanternCard />
         <WeeklyBossCard />
       </div>
