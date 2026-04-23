@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CATEGORY_META, QUESTS, RECORDS, PLAYER } from "@/data/world";
 import { SOCIAL_QUESTS } from "@/data/goals";
+import { RARITY_META, COMBO, WEEKLY_BOSS } from "@/data/gamification";
 import { toast } from "sonner";
 
 const Today = () => {
-  const main = QUESTS[1]; // 主线副本：勇气
+  const main = QUESTS[1];
   const sides = [QUESTS[0], QUESTS[2], QUESTS[4]];
   const recent = RECORDS.slice(0, 2);
   const today = new Date().toLocaleDateString("zh-CN", {
@@ -13,6 +14,9 @@ const Today = () => {
     day: "numeric",
     weekday: "long",
   });
+
+  const mainRarity = RARITY_META[main.rarity];
+  const bossPct = (WEEKLY_BOSS.hp / WEEKLY_BOSS.hpMax) * 100;
 
   return (
     <article className="max-w-4xl mx-auto px-5 md:px-10 py-10 md:py-14">
@@ -30,21 +34,132 @@ const Today = () => {
         <span className="stamp">每日一封 · 等你拆开</span>
       </header>
 
+      {/* 连击 + BOSS 双卡 */}
+      <div className="grid md:grid-cols-2 gap-4 mb-8">
+        {/* 连击卡 */}
+        <section className="ink-card p-5">
+          <div className="flex items-center justify-between mb-2">
+            <p className="font-hand text-sm text-muted-foreground">
+              ✦ 连续记录
+            </p>
+            <span className="font-hand text-xs text-muted-foreground">
+              最长 {COMBO.best} 天
+            </span>
+          </div>
+          <p className="font-serif-en text-3xl mb-3">
+            {COMBO.current}
+            <span className="text-base text-muted-foreground ml-1">天</span>
+          </p>
+          <div className="flex gap-1">
+            {COMBO.last14.map((d, i) => (
+              <span
+                key={i}
+                className={`flex-1 h-5 rounded-sm border ${
+                  d
+                    ? "bg-[hsl(var(--gold))] border-foreground"
+                    : "bg-secondary border-foreground/30"
+                }`}
+                title={d ? "已记录" : "空白"}
+              />
+            ))}
+          </div>
+          <p className="font-hand text-xs text-muted-foreground mt-2">
+            最近 14 天 · 不必每天都满，留白也算节奏
+          </p>
+        </section>
+
+        {/* 每周 BOSS */}
+        <section
+          className="ink-card p-5 relative overflow-hidden"
+          style={{ borderColor: "hsl(var(--seal))" }}
+        >
+          <span
+            className="absolute -top-3 left-5 px-2 py-0.5 text-[10px] tracking-widest font-bold border-2"
+            style={{
+              borderColor: "hsl(var(--seal))",
+              background: "hsl(var(--cream))",
+              color: "hsl(var(--seal))",
+            }}
+          >
+            本周心魔
+          </span>
+          <div className="flex items-start gap-3 mt-1">
+            <div
+              className="w-12 h-12 rounded-sm border-2 flex items-center justify-center text-2xl flex-shrink-0"
+              style={{
+                borderColor: "hsl(var(--seal))",
+                background: "hsl(var(--parchment-dark))",
+              }}
+            >
+              {WEEKLY_BOSS.emoji}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-serif-en text-lg leading-tight">
+                {WEEKLY_BOSS.name}
+              </p>
+              <p className="text-xs text-foreground/70 leading-snug mt-0.5">
+                {WEEKLY_BOSS.desc}
+              </p>
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+              <span>HP</span>
+              <span>
+                {WEEKLY_BOSS.hp} / {WEEKLY_BOSS.hpMax} · 还剩{" "}
+                {WEEKLY_BOSS.endsIn}
+              </span>
+            </div>
+            <div className="h-2 border border-foreground bg-secondary overflow-hidden rounded-sm">
+              <div
+                className="h-full transition-all"
+                style={{
+                  width: `${bossPct}%`,
+                  background:
+                    "linear-gradient(90deg, hsl(var(--seal)), hsl(var(--rust)))",
+                }}
+              />
+            </div>
+          </div>
+          <p className="font-hand text-[11px] text-muted-foreground mt-2">
+            ⚔️ 弱点：{CATEGORY_META[WEEKLY_BOSS.weakness].emoji}{" "}
+            {CATEGORY_META[WEEKLY_BOSS.weakness].label} · 奖励：
+            {WEEKLY_BOSS.reward}
+          </p>
+        </section>
+      </div>
+
       {/* 主线副本 */}
-      <section className="ink-card p-6 md:p-8 mb-8">
+      <section
+        className="ink-card p-6 md:p-8 mb-8 relative"
+        style={{
+          boxShadow: `4px 4px 0 hsl(var(--foreground)), 0 0 32px ${mainRarity.glow}`,
+        }}
+      >
         <span className="absolute -top-3 left-6 bg-accent border border-foreground px-3 py-0.5 text-[11px] tracking-widest font-bold">
           今日副本
         </span>
-        <p className="font-hand text-sm flex items-center gap-2 mb-2" style={{ color: CATEGORY_META[main.category].color }}>
+        <span
+          className="absolute -top-3 right-6 px-2 py-0.5 text-[10px] tracking-widest font-bold border-2 bg-card"
+          style={{ borderColor: mainRarity.color, color: mainRarity.color }}
+        >
+          ◆ {mainRarity.label} · ×{mainRarity.xpMul} XP
+        </span>
+        <p
+          className="font-hand text-sm flex items-center gap-2 mb-2 mt-2"
+          style={{ color: CATEGORY_META[main.category].color }}
+        >
           <span className="inline-block w-5 h-px bg-current" />
-          {CATEGORY_META[main.category].emoji} {CATEGORY_META[main.category].label} · {CATEGORY_META[main.category].hand}
+          {CATEGORY_META[main.category].emoji}{" "}
+          {CATEGORY_META[main.category].label} ·{" "}
+          {CATEGORY_META[main.category].hand}
         </p>
         <h3 className="font-serif-en text-2xl mb-3">{main.title}</h3>
         <p className="text-[0.95rem] leading-relaxed text-foreground/80 border-l-[3px] border-secondary pl-4 mb-6">
           {main.desc}
         </p>
 
-        <div className="flex gap-6 mb-6 text-sm">
+        <div className="flex gap-6 mb-6 text-sm flex-wrap">
           <div>
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
               难度
@@ -57,15 +172,20 @@ const Today = () => {
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
               经验
             </p>
-            <p className="font-hand text-base text-accent-foreground" style={{ color: "hsl(var(--gold))" }}>
-              +{main.xp} XP
+            <p
+              className="font-hand text-base"
+              style={{ color: "hsl(var(--gold))" }}
+            >
+              +{Math.round(main.xp * mainRarity.xpMul)} XP
             </p>
           </div>
           <div>
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-              留下
+              掉落
             </p>
-            <p className="font-hand text-base">勇气印记 · 火山领地</p>
+            <p className="font-hand text-base">
+              🔥 火之碎片 ×1 · ⚔️ BOSS 伤害 +12
+            </p>
           </div>
         </div>
 
@@ -79,13 +199,23 @@ const Today = () => {
         </div>
 
         <div className="flex gap-3 flex-wrap">
-          <Button asChild className="bg-foreground text-background hover:bg-ink-soft rounded-sm">
+          <Button
+            asChild
+            className="bg-foreground text-background hover:bg-ink-soft rounded-sm"
+          >
             <Link to={`/quest/${main.id}`}>接受副本</Link>
           </Button>
-          <Button asChild variant="outline" className="border-2 border-foreground rounded-sm">
+          <Button
+            asChild
+            variant="outline"
+            className="border-2 border-foreground rounded-sm"
+          >
             <Link to={`/quest/${main.id}/record`}>已经做了 · 直接记录</Link>
           </Button>
-          <Button variant="ghost" className="border border-dashed border-foreground/40 rounded-sm text-muted-foreground">
+          <Button
+            variant="ghost"
+            className="border border-dashed border-foreground/40 rounded-sm text-muted-foreground"
+          >
             换一个
           </Button>
         </div>
@@ -99,32 +229,45 @@ const Today = () => {
       <div className="grid md:grid-cols-3 gap-4 mb-12">
         {sides.map((q) => {
           const m = CATEGORY_META[q.category];
+          const r = RARITY_META[q.rarity];
           return (
             <Link
               key={q.id}
               to={`/quest/${q.id}`}
-              className="ink-card p-5 hover:-translate-y-0.5 transition-transform"
+              className="ink-card p-5 hover:-translate-y-0.5 transition-transform relative"
+              style={{ boxShadow: `4px 4px 0 hsl(var(--foreground)), 0 0 18px ${r.glow}` }}
             >
-              <p className="font-hand text-xs mb-2" style={{ color: m.color }}>
-                {m.emoji} {m.label}
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-hand text-xs" style={{ color: m.color }}>
+                  {m.emoji} {m.label}
+                </p>
+                <span
+                  className="text-[10px] font-bold tracking-widest px-1.5 py-0.5 border rounded-sm"
+                  style={{ borderColor: r.color, color: r.color }}
+                >
+                  ◆ {r.label}
+                </span>
+              </div>
               <h4 className="font-serif-en text-lg mb-2">{q.title}</h4>
               <p className="text-xs text-foreground/70 leading-relaxed line-clamp-3">
                 {q.desc}
               </p>
               <p className="mt-3 font-hand text-xs text-muted-foreground">
-                {q.difficulty} · +{q.xp} XP
+                {q.difficulty} · +{Math.round(q.xp * r.xpMul)} XP
               </p>
             </Link>
           );
         })}
       </div>
 
-      {/* 小型社交副本 · 吃饭 / 共读 / 看电影 */}
+      {/* 小型社交副本 */}
       <h3 className="font-serif-en text-lg mb-4 flex items-center gap-3">
         要不要顺便加入一件小事
         <span className="flex-1 h-px bg-secondary" />
-        <Link to="/goals" className="font-hand text-sm text-muted-foreground hover:text-foreground">
+        <Link
+          to="/goals"
+          className="font-hand text-sm text-muted-foreground hover:text-foreground"
+        >
           找长期搭子 →
         </Link>
       </h3>
@@ -182,7 +325,10 @@ const Today = () => {
       <h3 className="font-serif-en text-lg mb-4 flex items-center gap-3">
         最近的足迹
         <span className="flex-1 h-px bg-secondary" />
-        <Link to="/chronicle" className="font-hand text-sm text-muted-foreground hover:text-foreground">
+        <Link
+          to="/chronicle"
+          className="font-hand text-sm text-muted-foreground hover:text-foreground"
+        >
           翻开编年史 →
         </Link>
       </h3>
