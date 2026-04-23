@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import WorldMap from "./WorldMap";
 import InnerTerrain from "./InnerTerrain";
+import { IconMap, IconStarFour } from "@/components/HandIcon";
 
 // 地图栏目：顶部 Tab 切换 世界地图 / 内心地图
 // 支持 ?surface=world|inner&lit=x,y 来自记录页跳转，触发"新光点亮起"动画
@@ -39,7 +40,7 @@ const MapHub = () => {
                 : "hover:bg-secondary"
             }`}
           >
-            🗺️ 世界地图
+            <span className="inline-flex items-center gap-1.5"><IconMap size={14} /> 世界地图</span>
           </button>
           <button
             onClick={() => switchTab("inner")}
@@ -49,7 +50,7 @@ const MapHub = () => {
                 : "hover:bg-secondary"
             }`}
           >
-            ✦ 内心地图
+            <span className="inline-flex items-center gap-1.5"><IconStarFour size={14} /> 内心地图</span>
           </button>
         </div>
       </div>
