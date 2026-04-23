@@ -99,6 +99,7 @@ const NightMapCanvas = ({
   children,
   className = "",
 }: Props) => {
+  const p = PALETTES[palette];
   const isNight = palette === "worldNight";
 
   return (
