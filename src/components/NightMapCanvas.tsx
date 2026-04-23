@@ -1,66 +1,75 @@
 import { ReactNode } from "react";
 
-// 一张"夜空羊皮纸"地图画布：深色夜空 + 雾气 + 远山轮廓 + 网格 + 内容层
-// 通过 palette 切换"外部世界（暖色灯台）"和"内心地图（极光紫青）"两种调色
+// 一张"羊皮纸地图"画布：复古暖色调 + 墨线远山 + 雾气 + 网格 + 灯台
+// 通过 palette 切换"外部世界（暖金灯台）"和"内心地图（紫罗兰心灯）"两种调色
 export type MapPalette = "world" | "inner";
 
 const PALETTES: Record<
   MapPalette,
   {
-    night: string;
-    nightDeep: string;
+    /** 画布底色 */
+    base: string;
+    /** 画布角落晕染色 */
+    vignette: string;
+    /** 雾气 */
     fog: string;
-    fogLight: string;
+    /** 网格线 */
     grid: string;
+    /** 远山 - 三层 */
     mountainFar: string;
     mountainMid: string;
     mountainNear: string;
+    /** 山棱受光面 */
+    mountainHighlight: string;
+    /** 灯台暖光 */
     lantern: string;
     lanternGlow: string;
+    /** 文字 */
     text: string;
-    auroraA?: string;
-    auroraB?: string;
-    auroraC?: string;
+    textSoft: string;
+    /** 是否绘制极光（仅 inner） */
+    aurora?: { a: string; b: string; c: string };
   }
 > = {
   world: {
-    night: "var(--map-night)",
-    nightDeep: "var(--map-night-deep)",
-    fog: "var(--map-fog)",
-    fogLight: "var(--map-fog-light)",
-    grid: "var(--map-grid)",
-    mountainFar: "var(--map-mountain-far)",
-    mountainMid: "var(--map-mountain-mid)",
-    mountainNear: "var(--map-mountain-near)",
-    lantern: "var(--map-lantern)",
-    lanternGlow: "var(--map-lantern-glow)",
-    text: "var(--map-text)",
+    base: "var(--cream)",
+    vignette: "var(--parchment-deep)",
+    fog: "var(--parchment-deep)",
+    grid: "var(--ink)",
+    mountainFar: "var(--ink-faded)",
+    mountainMid: "var(--ink-soft)",
+    mountainNear: "var(--rust)",
+    mountainHighlight: "var(--gold)",
+    lantern: "var(--gold)",
+    lanternGlow: "var(--gold-bright)",
+    text: "var(--ink)",
+    textSoft: "var(--ink-faded)",
   },
   inner: {
-    night: "var(--inner-night)",
-    nightDeep: "var(--inner-night-deep)",
-    fog: "var(--inner-fog)",
-    fogLight: "var(--inner-fog-light)",
-    grid: "var(--inner-grid)",
-    mountainFar: "var(--inner-night)",
-    mountainMid: "var(--inner-fog)",
-    mountainNear: "var(--inner-fog-light)",
-    lantern: "var(--inner-lantern)",
-    lanternGlow: "var(--inner-lantern-glow)",
-    text: "var(--inner-text)",
-    auroraA: "var(--inner-aurora-1)",
-    auroraB: "var(--inner-aurora-2)",
-    auroraC: "var(--inner-aurora-3)",
+    base: "var(--cream)",
+    vignette: "var(--parchment-deep)",
+    fog: "var(--parchment-dark)",
+    grid: "var(--ink)",
+    mountainFar: "var(--ink-faded)",
+    mountainMid: "var(--moss)",
+    mountainNear: "var(--sky)",
+    mountainHighlight: "var(--moss-light)",
+    lantern: "var(--seal)",        // 暗紫红，作为心灯主色
+    lanternGlow: "var(--rust)",    // 暖橙光晕
+    text: "var(--ink)",
+    textSoft: "var(--ink-faded)",
+    aurora: {
+      a: "var(--moss-light)",
+      b: "var(--seal)",
+      c: "var(--sky)",
+    },
   },
 };
 
 interface Props {
   palette?: MapPalette;
-  /** 16/9 之类，默认 16/10 */
   aspectRatio?: string;
-  /** 顶部叠加：标题/年份切换/分享按钮等 */
   topOverlay?: ReactNode;
-  /** 画布之上、灯台之下，可放装饰（旗帜、问号等） */
   children?: ReactNode;
   className?: string;
 }
@@ -79,10 +88,23 @@ const NightMapCanvas = ({
       className={`relative w-full overflow-hidden rounded-sm border-2 border-foreground ${className}`}
       style={{
         aspectRatio,
-        background: `radial-gradient(120% 80% at 50% 110%, hsl(${p.fog} / 0.55), hsl(${p.nightDeep}) 70%)`,
+        background: `
+          radial-gradient(120% 80% at 50% 100%, hsl(${p.vignette} / 0.55), transparent 70%),
+          radial-gradient(80% 60% at 50% 0%, hsl(${p.fog} / 0.35), transparent 60%),
+          hsl(${p.base})
+        `,
       }}
     >
-      {/* 远景星点 / 飘散光斑 */}
+      {/* 羊皮纸纹理叠层 */}
+      <div
+        className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-60"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E\")",
+        }}
+        aria-hidden
+      />
+
       <svg
         viewBox="0 0 100 62"
         preserveAspectRatio="none"
@@ -90,93 +112,110 @@ const NightMapCanvas = ({
         aria-hidden
       >
         <defs>
-          {/* 网格 */}
-          <pattern id={`grid-${palette}`} width="6" height="6" patternUnits="userSpaceOnUse">
-            <path d="M 6 0 L 0 0 0 6" fill="none" stroke={`hsl(${p.grid} / 0.10)`} strokeWidth="0.12" />
+          {/* 经纬网格 */}
+          <pattern id={`grid-${palette}`} width="8" height="8" patternUnits="userSpaceOnUse">
+            <path
+              d="M 8 0 L 0 0 0 8"
+              fill="none"
+              stroke={`hsl(${p.grid} / 0.07)`}
+              strokeWidth="0.1"
+            />
           </pattern>
-          {/* 雾气 */}
-          <radialGradient id={`fogA-${palette}`} cx="20%" cy="40%" r="60%">
-            <stop offset="0%" stopColor={`hsl(${p.fogLight} / 0.55)`} />
+          {/* 雾气球 */}
+          <radialGradient id={`fogA-${palette}`} cx="22%" cy="38%" r="55%">
+            <stop offset="0%" stopColor={`hsl(${p.fog} / 0.6)`} />
             <stop offset="100%" stopColor={`hsl(${p.fog} / 0)`} />
           </radialGradient>
-          <radialGradient id={`fogB-${palette}`} cx="80%" cy="30%" r="55%">
-            <stop offset="0%" stopColor={`hsl(${p.fogLight} / 0.45)`} />
+          <radialGradient id={`fogB-${palette}`} cx="78%" cy="28%" r="50%">
+            <stop offset="0%" stopColor={`hsl(${p.fog} / 0.5)`} />
             <stop offset="100%" stopColor={`hsl(${p.fog} / 0)`} />
           </radialGradient>
-          {/* 极光（仅 inner） */}
-          {palette === "inner" && (
-            <>
-              <linearGradient id="auroraGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor={`hsl(${p.auroraA} / 0)`} />
-                <stop offset="35%" stopColor={`hsl(${p.auroraA} / 0.55)`} />
-                <stop offset="65%" stopColor={`hsl(${p.auroraB} / 0.55)`} />
-                <stop offset="100%" stopColor={`hsl(${p.auroraC} / 0)`} />
-              </linearGradient>
-            </>
+          {/* 极光（inner） */}
+          {p.aurora && (
+            <linearGradient id="auroraGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor={`hsl(${p.aurora.a} / 0)`} />
+              <stop offset="35%" stopColor={`hsl(${p.aurora.a} / 0.35)`} />
+              <stop offset="65%" stopColor={`hsl(${p.aurora.b} / 0.32)`} />
+              <stop offset="100%" stopColor={`hsl(${p.aurora.c} / 0)`} />
+            </linearGradient>
           )}
-          {/* 灯台光晕 */}
-          <radialGradient id={`lantern-${palette}`} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor={`hsl(${p.lanternGlow} / 0.95)`} />
-            <stop offset="40%" stopColor={`hsl(${p.lantern} / 0.55)`} />
-            <stop offset="100%" stopColor={`hsl(${p.lantern} / 0)`} />
-          </radialGradient>
         </defs>
 
         {/* 网格 */}
         <rect width="100" height="62" fill={`url(#grid-${palette})`} />
 
-        {/* 极光带 - inner 专属 */}
-        {palette === "inner" && (
+        {/* 极光带 - inner 专属，复古淡彩 */}
+        {p.aurora && (
           <>
             <path
-              d="M -10 18 Q 30 6 60 14 T 110 12 L 110 26 Q 70 22 40 28 T -10 30 Z"
+              d="M -10 16 Q 30 6 60 12 T 110 10 L 110 24 Q 70 20 40 26 T -10 28 Z"
               fill="url(#auroraGrad)"
-              opacity="0.55"
-              style={{ animation: "auroraFlow 18s ease-in-out infinite" }}
+              opacity="0.5"
+              style={{ animation: "auroraFlow 22s ease-in-out infinite" }}
             />
             <path
-              d="M -10 8 Q 40 0 70 6 T 110 4 L 110 14 Q 60 14 30 18 T -10 18 Z"
+              d="M -10 6 Q 40 0 70 4 T 110 2 L 110 14 Q 60 12 30 16 T -10 18 Z"
               fill="url(#auroraGrad)"
-              opacity="0.35"
-              style={{ animation: "auroraFlow 24s ease-in-out infinite reverse" }}
+              opacity="0.3"
+              style={{ animation: "auroraFlow 28s ease-in-out infinite reverse" }}
             />
           </>
         )}
 
-        {/* 远山 - 多层 low-poly 山脊 */}
+        {/* 远山 - 三层 low-poly + 墨线轮廓 */}
         <g>
           {/* 远层 */}
           <path
             d="M 0 38 L 8 32 L 14 36 L 22 28 L 30 34 L 38 26 L 46 32 L 54 24 L 62 30 L 70 22 L 78 30 L 86 24 L 94 32 L 100 28 L 100 62 L 0 62 Z"
-            fill={`hsl(${p.mountainFar})`}
-            opacity="0.85"
+            fill={`hsl(${p.mountainFar} / 0.28)`}
+            stroke={`hsl(${p.grid} / 0.35)`}
+            strokeWidth="0.18"
           />
           {/* 中层 */}
           <path
             d="M 0 46 L 6 42 L 12 46 L 20 38 L 28 44 L 36 36 L 44 42 L 52 34 L 60 42 L 68 36 L 76 44 L 84 38 L 92 46 L 100 40 L 100 62 L 0 62 Z"
-            fill={`hsl(${p.mountainMid})`}
-            opacity="0.78"
+            fill={`hsl(${p.mountainMid} / 0.32)`}
+            stroke={`hsl(${p.grid} / 0.45)`}
+            strokeWidth="0.2"
           />
-          {/* 中层光面 - 模拟暖光照过的山棱 */}
+          {/* 中层暖光面 */}
           <path
             d="M 28 44 L 36 36 L 44 42 L 52 34 L 60 42 L 68 36 L 76 44 L 76 62 L 28 62 Z"
-            fill={`hsl(${p.mountainNear} / 0.35)`}
+            fill={`hsl(${p.mountainHighlight} / 0.18)`}
           />
           {/* 近层 */}
           <path
             d="M 0 54 L 10 50 L 18 54 L 28 48 L 38 54 L 50 46 L 60 54 L 70 50 L 82 56 L 92 50 L 100 54 L 100 62 L 0 62 Z"
-            fill={`hsl(${p.mountainNear} / 0.55)`}
+            fill={`hsl(${p.mountainNear} / 0.28)`}
+            stroke={`hsl(${p.grid} / 0.5)`}
+            strokeWidth="0.22"
           />
+          {/* 山顶小三角点缀（更地图味） */}
+          {[
+            [22, 28],
+            [38, 26],
+            [54, 24],
+            [70, 22],
+            [86, 24],
+          ].map(([x, y], i) => (
+            <path
+              key={i}
+              d={`M ${x - 1.2} ${y + 1.5} L ${x} ${y - 0.6} L ${x + 1.2} ${y + 1.5} Z`}
+              fill="none"
+              stroke={`hsl(${p.grid} / 0.55)`}
+              strokeWidth="0.18"
+            />
+          ))}
         </g>
 
-        {/* 雾气球 */}
+        {/* 雾气 */}
         <rect width="100" height="62" fill={`url(#fogA-${palette})`} />
         <rect width="100" height="62" fill={`url(#fogB-${palette})`} />
 
-        {/* 散落星点 / 远萤 */}
-        {Array.from({ length: 26 }).map((_, i) => {
+        {/* 远萤 / 飘散光斑 — 暖金 */}
+        {Array.from({ length: 18 }).map((_, i) => {
           const x = (i * 137.5) % 100;
-          const y = (i * 53.3) % 38;
+          const y = (i * 53.3) % 32;
           const r = ((i % 3) + 1) * 0.18;
           return (
             <circle
@@ -184,7 +223,7 @@ const NightMapCanvas = ({
               cx={x}
               cy={y}
               r={r}
-              fill={`hsl(${p.lanternGlow} / 0.55)`}
+              fill={`hsl(${p.lanternGlow} / 0.65)`}
               style={{
                 animation: `twinkle ${4 + (i % 5)}s ease-in-out ${i * 0.3}s infinite`,
               }}
@@ -193,7 +232,7 @@ const NightMapCanvas = ({
         })}
       </svg>
 
-      {/* 内容层（灯台、标记） */}
+      {/* 内容层 */}
       <div className="absolute inset-0">{children}</div>
 
       {/* 顶部叠加 */}
@@ -202,17 +241,17 @@ const NightMapCanvas = ({
       {/* 共用 keyframes */}
       <style>{`
         @keyframes twinkle {
-          0%, 100% { opacity: 0.25; transform: scale(0.8); }
-          50% { opacity: 0.95; transform: scale(1.2); }
+          0%, 100% { opacity: 0.3; transform: scale(0.8); }
+          50% { opacity: 0.95; transform: scale(1.25); }
         }
         @keyframes auroraFlow {
           0%, 100% { transform: translateX(0) translateY(0); opacity: 0.4; }
-          50% { transform: translateX(-4%) translateY(2%); opacity: 0.7; }
+          50% { transform: translateX(-3%) translateY(1.5%); opacity: 0.65; }
         }
         @keyframes lanternBlink {
           0%, 100% { opacity: 1; filter: brightness(1); }
-          45% { opacity: 0.85; filter: brightness(1.4); }
-          55% { opacity: 0.7; filter: brightness(0.9); }
+          45% { opacity: 0.85; filter: brightness(1.35); }
+          55% { opacity: 0.75; filter: brightness(0.95); }
         }
         @keyframes lanternHalo {
           0%, 100% { transform: scale(1); opacity: 0.55; }
@@ -241,13 +280,13 @@ export const Lantern = ({
   x: number;
   y: number;
   label?: string;
-  color?: string; // 完整 hsl(...) 字符串，可选
+  color?: string;
   glow?: string;
   size?: number;
   flag?: boolean;
 }) => {
-  const c = color ?? "hsl(var(--map-lantern))";
-  const g = glow ?? "hsl(var(--map-lantern-glow))";
+  const c = color ?? "hsl(var(--gold))";
+  const g = glow ?? "hsl(var(--gold-bright))";
   return (
     <button
       className="absolute -translate-x-1/2 -translate-y-1/2 group"
@@ -260,6 +299,7 @@ export const Lantern = ({
           width: size * 4,
           height: size * 4,
           background: `radial-gradient(circle, ${g} 0%, transparent 65%)`,
+          opacity: 0.7,
           animation: "lanternHalo 3.2s ease-in-out infinite",
         }}
       />
@@ -268,7 +308,7 @@ export const Lantern = ({
           {/* 旗杆 */}
           <span
             className="absolute left-1/2 -translate-x-1/2 bottom-0 w-px"
-            style={{ height: size * 1.6, background: c }}
+            style={{ height: size * 1.6, background: "hsl(var(--ink))" }}
           />
           {/* 旗面 */}
           <span
@@ -277,6 +317,7 @@ export const Lantern = ({
               width: size * 0.9,
               height: size * 0.55,
               background: c,
+              border: "1px solid hsl(var(--ink))",
               clipPath: "polygon(0 0, 100% 0, 75% 50%, 100% 100%, 0 100%)",
               animation: "lanternBlink 2.2s ease-in-out infinite",
             }}
@@ -289,18 +330,20 @@ export const Lantern = ({
             width: size,
             height: size,
             background: c,
-            boxShadow: `0 0 ${size}px ${size / 2}px ${g}`,
+            border: "1.5px solid hsl(var(--ink))",
+            boxShadow: `0 0 ${size * 0.8}px ${size / 3}px ${g}`,
             animation: "lanternBlink 2.4s ease-in-out infinite",
           }}
         />
       )}
       {label && (
         <span
-          className="absolute left-1/2 -translate-x-1/2 mt-1 whitespace-nowrap font-hand text-[11px] px-1.5 py-0.5 rounded-sm pointer-events-none"
+          className="absolute left-1/2 -translate-x-1/2 mt-1.5 whitespace-nowrap font-hand text-[11px] px-1.5 py-0.5 rounded-sm pointer-events-none"
           style={{
             top: "100%",
-            color: c,
-            textShadow: "0 1px 4px hsl(0 0% 0% / 0.8)",
+            color: "hsl(var(--ink))",
+            background: "hsl(var(--cream) / 0.85)",
+            border: "1px solid hsl(var(--ink) / 0.4)",
           }}
         >
           {label}
