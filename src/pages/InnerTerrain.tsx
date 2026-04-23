@@ -26,17 +26,11 @@ const InnerTerrain = () => {
       <div>
         <p
           className="font-hand text-xs tracking-[0.4em] uppercase"
-          style={{ color: "hsl(var(--inner-text) / 0.7)" }}
+          style={{ color: "hsl(var(--ink-faded))" }}
         >
           Inner Terrain
         </p>
-        <h2
-          className="text-2xl md:text-3xl font-serif-en mt-1"
-          style={{
-            color: "hsl(var(--inner-text))",
-            textShadow: "0 2px 12px hsl(var(--inner-lantern) / 0.5)",
-          }}
-        >
+        <h2 className="text-2xl md:text-3xl font-serif-en mt-1 text-foreground">
           心之地理
         </h2>
         <div className="flex gap-1 mt-3">
@@ -46,10 +40,9 @@ const InnerTerrain = () => {
               onClick={() => setPhase(y)}
               className="px-3 py-1 text-xs rounded-full font-hand transition-colors"
               style={{
-                background:
-                  phase === y ? "hsl(var(--inner-text) / 0.18)" : "transparent",
-                border: `1px solid hsl(var(--inner-text) / ${phase === y ? 0.5 : 0.2})`,
-                color: "hsl(var(--inner-text))",
+                background: phase === y ? "hsl(var(--ink) / 0.1)" : "hsl(var(--cream) / 0.6)",
+                border: `1px solid hsl(var(--ink) / ${phase === y ? 0.55 : 0.25})`,
+                color: "hsl(var(--ink))",
               }}
             >
               {y === "new" ? "🌑 新月" : y === "waxing" ? "🌓 半月" : "🌕 满月"}
@@ -60,9 +53,9 @@ const InnerTerrain = () => {
       <button
         className="px-3 py-1.5 text-xs rounded-full font-hand"
         style={{
-          background: "hsl(var(--inner-text) / 0.14)",
-          border: "1px solid hsl(var(--inner-text) / 0.3)",
-          color: "hsl(var(--inner-text))",
+          background: "hsl(var(--cream) / 0.7)",
+          border: "1px solid hsl(var(--ink) / 0.4)",
+          color: "hsl(var(--ink))",
         }}
       >
         分享
@@ -70,13 +63,13 @@ const InnerTerrain = () => {
     </div>
   );
 
-  // 把四类副本色转成在深色地图上可读的色（保持原本 HSL 但加亮）
-  const auroraColor = (c: QuestCategory) => {
+  // 内心地图保持原本副本色板（复古暖色系）
+  const innerColor = (c: QuestCategory) => {
     const map: Record<QuestCategory, string> = {
-      flourish: "hsl(168 70% 60%)", // 苔原 → 极光青
-      courage: "hsl(14 80% 62%)",   // 火山 → 暖橙
-      create: "hsl(48 95% 65%)",    // 光林 → 暖金
-      solitude: "hsl(220 75% 65%)", // 深湖 → 蓝
+      flourish: "hsl(var(--moss))",
+      courage: "hsl(var(--rust))",
+      create: "hsl(var(--gold))",
+      solitude: "hsl(var(--sky))",
     };
     return map[c];
   };
