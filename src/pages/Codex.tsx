@@ -1,16 +1,41 @@
 import { Link } from "react-router-dom";
-import { CATEGORY_META } from "@/data/world";
+import { CATEGORY_META, type QuestCategory } from "@/data/world";
 import { FRAGMENTS, RARITY_META } from "@/data/gamification";
 import { toast } from "sonner";
+import {
+  CategoryIcon,
+  IconDroplet,
+  IconFlame,
+  IconLeaf,
+  IconLock,
+  IconMapPin,
+  IconQuestion,
+  IconSpark,
+  IconStarFour,
+} from "@/components/HandIcon";
 
-// 图鉴：印记碎片收集 + 合成
+const FragmentGlyph = ({
+  category,
+  size = 22,
+}: {
+  category: QuestCategory;
+  size?: number;
+}) => {
+  const map = {
+    flourish: IconLeaf,
+    courage: IconFlame,
+    create: IconSpark,
+    solitude: IconDroplet,
+  } as const;
+  const C = map[category];
+  return <C size={size} />;
+};
+
 const Codex = () => {
-  // 已合成的徽章 mock
   const forgedBadges = [
-    { id: "bg-1", emoji: "🌊", name: "深湖徽章", desc: "由 5 枚湖之碎片凝成", category: "solitude" as const },
+    { id: "bg-1", name: "深湖徽章", desc: "由 5 枚湖之碎片凝成", category: "solitude" as const },
   ];
 
-  // 稀有度图鉴
   const rarityCollection = [
     { rarity: "common" as const, owned: 12, total: 30 },
     { rarity: "rare" as const, owned: 5, total: 12 },
@@ -18,7 +43,6 @@ const Codex = () => {
     { rarity: "legendary" as const, owned: 1, total: 3 },
   ];
 
-  // 隐藏地点
   const hiddenPlaces = [
     { name: "雾中灯塔", hint: "在某个下雨的傍晚走到城市最高处。", found: false },
     { name: "无名小馆", hint: "和一个许久没见的人吃一顿饭。", found: false },
@@ -37,7 +61,7 @@ const Codex = () => {
         </div>
         <Link
           to="/profile"
-          className="font-hand text-sm text-muted-foreground hover:text-foreground"
+          className="font-hand text-sm text-muted-foreground hover:text-foreground hand-link"
         >
           ← 回到角色面板
         </Link>
@@ -61,23 +85,25 @@ const Codex = () => {
             >
               <div className="flex items-start gap-3">
                 <div
-                  className="w-14 h-14 rounded-sm border-2 flex items-center justify-center text-3xl flex-shrink-0"
+                  className="w-14 h-14 rounded-sm border-2 flex items-center justify-center flex-shrink-0"
                   style={{
                     borderColor: m.color,
                     background: `${m.color}15`,
+                    color: m.color,
                   }}
                 >
-                  {f.emoji}
+                  <FragmentGlyph category={f.category} size={26} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="font-serif-en text-lg leading-tight">
                     {f.name}
                   </p>
                   <p
-                    className="font-hand text-xs"
+                    className="font-hand text-xs inline-flex items-center gap-1.5"
                     style={{ color: m.color }}
                   >
-                    {m.emoji} 来自 {m.label} 副本
+                    <CategoryIcon category={f.category} size={11} />
+                    来自 {m.label} 副本
                   </p>
                   <div className="mt-2">
                     <div className="flex items-center justify-between text-[10px] tracking-widest text-muted-foreground mb-1">
@@ -91,32 +117,37 @@ const Codex = () => {
                       />
                     </div>
                   </div>
-                  {/* 碎片格子 */}
                   <div className="flex gap-1 mt-2">
                     {Array.from({ length: f.need }).map((_, i) => (
                       <span
                         key={i}
-                        className="w-5 h-5 border border-foreground/40 rounded-sm flex items-center justify-center text-xs"
+                        className="w-5 h-5 border border-foreground/40 rounded-sm flex items-center justify-center"
                         style={
                           i < f.count
                             ? { background: m.color, color: "hsl(var(--cream))" }
                             : { background: "hsl(var(--secondary))" }
                         }
                       >
-                        {i < f.count ? f.emoji : ""}
+                        {i < f.count && <FragmentGlyph category={f.category} size={11} />}
                       </span>
                     ))}
                   </div>
                   <button
                     disabled={!ready}
                     onClick={() => toast(`✦ ${f.forms} 已凝成。`)}
-                    className={`mt-3 px-3 py-1 text-xs border-2 rounded-sm transition-colors ${
+                    className={`mt-3 px-3 py-1 text-xs border-2 rounded-sm transition-colors inline-flex items-center gap-1 ${
                       ready
                         ? "border-foreground bg-foreground text-background hover:bg-ink-soft"
                         : "border-foreground/30 text-muted-foreground cursor-not-allowed"
                     }`}
                   >
-                    {ready ? `✦ 凝成 ${f.forms}` : `还差 ${f.need - f.count} 枚`}
+                    {ready ? (
+                      <>
+                        <IconStarFour size={11} /> 凝成 {f.forms}
+                      </>
+                    ) : (
+                      `还差 ${f.need - f.count} 枚`
+                    )}
                   </button>
                 </div>
               </div>
@@ -144,13 +175,14 @@ const Codex = () => {
               style={got ? { borderColor: m.color } : {}}
             >
               <div
-                className="w-14 h-14 mx-auto rounded-full border-2 flex items-center justify-center text-3xl mb-2"
+                className="w-14 h-14 mx-auto rounded-full border-2 flex items-center justify-center mb-2"
                 style={{
                   borderColor: got ? m.color : "hsl(var(--ink) / 0.3)",
                   background: got ? `${m.color}20` : "hsl(var(--secondary))",
+                  color: got ? m.color : "hsl(var(--ink) / 0.4)",
                 }}
               >
-                {got ? got.emoji : "?"}
+                {got ? <FragmentGlyph category={f.category} size={26} /> : <IconQuestion size={22} />}
               </div>
               <p className="font-serif-en text-sm">
                 {got ? got.name : "?? 徽章"}
@@ -181,10 +213,10 @@ const Codex = () => {
               }}
             >
               <p
-                className="font-serif-en text-lg"
+                className="font-serif-en text-lg inline-flex items-center gap-1.5"
                 style={{ color: r.color }}
               >
-                ◆ {r.label}
+                <IconStarFour size={14} /> {r.label}
               </p>
               <p className="font-hand text-2xl mt-1">
                 {rc.owned}
@@ -211,15 +243,16 @@ const Codex = () => {
             key={i}
             className={`ink-card p-4 ${p.found ? "" : "opacity-65"}`}
           >
-            <p className="font-serif-en text-base">
-              {p.found ? "📍" : "❓"} {p.found ? p.name : "???"}
+            <p className="font-serif-en text-base inline-flex items-center gap-1.5">
+              {p.found ? <IconMapPin size={14} /> : <IconQuestion size={14} />}
+              {p.found ? p.name : "???"}
             </p>
             <p className="font-hand text-xs text-muted-foreground mt-1 italic">
               线索：{p.hint}
             </p>
             {p.found && (
-              <p className="font-hand text-[11px] text-[hsl(var(--gold))] mt-1">
-                ✦ 已点亮
+              <p className="font-hand text-[11px] text-[hsl(var(--gold))] mt-1 inline-flex items-center gap-1">
+                <IconStarFour size={10} /> 已点亮
               </p>
             )}
           </div>

@@ -7,6 +7,46 @@ import {
   AVATAR_STAGES,
   CHARMS,
 } from "@/data/gamification";
+import {
+  CategoryIcon,
+  IconArrowRight,
+  IconBook,
+  IconCompass,
+  IconFlame,
+  IconKey,
+  IconLeaf,
+  IconLock,
+  IconLotus,
+  IconMapPin,
+  IconMountain,
+  IconQuill,
+  IconSpark,
+  IconStarFour,
+  IconSunrise,
+  WeatherIcon,
+} from "@/components/HandIcon";
+
+const CharmIcon = ({ id }: { id: string }) => {
+  const map: Record<string, JSX.Element> = {
+    "c-1": <IconLeaf size={22} />,
+    "c-2": <IconFlame size={22} />,
+    "c-3": <IconLotus size={22} />,
+    "c-4": <IconQuill size={22} />,
+  };
+  return map[id] ?? <IconStarFour size={22} />;
+};
+
+const AchievementIcon = ({ id }: { id: string }) => {
+  const map: Record<string, JSX.Element> = {
+    "a-1": <IconSunrise size={22} />,
+    "a-2": <IconKey size={22} />,
+    "a-3": <IconLotus size={22} />,
+    "a-4": <IconCompass size={22} />,
+    "a-5": <IconBook size={22} />,
+    "a-6": <IconMountain size={22} />,
+  };
+  return map[id] ?? <IconStarFour size={22} />;
+};
 
 const Profile = () => {
   const totalMilestones = GOALS.reduce((s, g) => s + g.milestones.length, 0);
@@ -19,7 +59,6 @@ const Profile = () => {
     Object.keys(CATEGORY_META) as (keyof typeof CATEGORY_META)[]
   ).map((k) => ({ key: k, count: RECORDS.filter((r) => r.category === k).length }));
 
-  // 当前化身阶段
   const currentStage = [...AVATAR_STAGES]
     .reverse()
     .find((s) => PLAYER.level >= s.lv) ?? AVATAR_STAGES[0];
@@ -27,7 +66,6 @@ const Profile = () => {
   const activeTitle = TITLES.find((t) => t.active);
   const equippedCharm = CHARMS.find((c) => c.equipped);
 
-  // 雷达图坐标
   const traitKeys: (keyof typeof PLAYER_TRAITS)[] = [
     "courage",
     "create",
@@ -52,22 +90,20 @@ const Profile = () => {
   });
 
   const achievements = [
-    { id: "a-1", emoji: "🌅", name: "破晓初行", desc: "完成第一个副本", got: true },
-    { id: "a-2", emoji: "🗝️", name: "勇气钥匙", desc: "完成 5 次勇气试炼", got: true },
-    { id: "a-3", emoji: "🪷", name: "静水深流", desc: "连续 7 天独处记录", got: true },
-    { id: "a-4", emoji: "🧭", name: "拓荒者", desc: "点亮 10 处足迹", got: false, progress: "8/10" },
-    { id: "a-5", emoji: "📚", name: "织字者", desc: "累计 30 篇记录", got: false, progress: "6/30" },
-    { id: "a-6", emoji: "🌋", name: "火山苏醒", desc: "完成 1 个长期目标", got: false, progress: "0/1" },
+    { id: "a-1", name: "破晓初行", desc: "完成第一个副本", got: true },
+    { id: "a-2", name: "勇气钥匙", desc: "完成 5 次勇气试炼", got: true },
+    { id: "a-3", name: "静水深流", desc: "连续 7 天独处记录", got: true },
+    { id: "a-4", name: "拓荒者", desc: "点亮 10 处足迹", got: false, progress: "8/10" },
+    { id: "a-5", name: "织字者", desc: "累计 30 篇记录", got: false, progress: "6/30" },
+    { id: "a-6", name: "火山苏醒", desc: "完成 1 个长期目标", got: false, progress: "0/1" },
   ];
 
   return (
     <article className="max-w-5xl mx-auto px-5 md:px-10 py-8">
-      {/* 角色面板 */}
       <header className="ink-card p-6 md:p-8 mb-8">
         <div className="grid md:grid-cols-[auto_1fr_auto] gap-6 items-center">
-          {/* 化身 */}
           <div className="flex flex-col items-center">
-            <div className="relative w-24 h-24 rounded-sm border-2 border-foreground bg-accent flex items-center justify-center font-serif-en text-5xl">
+            <div className="relative w-24 h-24 rounded-sm border-2 border-foreground bg-accent flex items-center justify-center font-serif-en text-5xl ink-bloom">
               {currentStage.sigil}
               <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 text-[10px] tracking-widest font-bold border border-foreground bg-card whitespace-nowrap">
                 Lv.{PLAYER.level}
@@ -78,15 +114,14 @@ const Profile = () => {
             </p>
           </div>
 
-          {/* 主信息 */}
           <div className="min-w-0">
             <p className="font-hand text-sm text-muted-foreground">Player</p>
             <h2 className="text-2xl md:text-3xl font-serif-en">
               {PLAYER.name}
             </h2>
             {activeTitle && (
-              <span className="inline-block mt-1 px-2 py-0.5 text-xs border-2 border-foreground bg-secondary rounded-sm">
-                ✦ {activeTitle.name}
+              <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-xs border-2 border-foreground bg-secondary rounded-sm">
+                <IconStarFour size={11} /> {activeTitle.name}
               </span>
             )}
             <div className="mt-3">
@@ -106,7 +141,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* 雷达图 */}
           <div className="w-40 h-40 mx-auto">
             <svg viewBox="0 0 100 100" className="w-full h-full">
               {[20, 30, 40].map((r) => (
@@ -155,7 +189,7 @@ const Profile = () => {
                     fill={CATEGORY_META[k].color}
                     style={{ fontFamily: "Caveat, cursive" }}
                   >
-                    {CATEGORY_META[k].emoji} {PLAYER_TRAITS[k]}
+                    {CATEGORY_META[k].label[0]} {PLAYER_TRAITS[k]}
                   </text>
                 );
               })}
@@ -169,8 +203,8 @@ const Profile = () => {
         心境护符 · 装备一枚
         <span className="flex-1 h-px bg-secondary" />
         {equippedCharm && (
-          <span className="font-hand text-xs text-muted-foreground">
-            当前：{equippedCharm.emoji} {equippedCharm.name}
+          <span className="font-hand text-xs text-muted-foreground inline-flex items-center gap-1">
+            当前： <CharmIcon id={equippedCharm.id} /> {equippedCharm.name}
           </span>
         )}
       </h3>
@@ -183,14 +217,16 @@ const Profile = () => {
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-2xl">{c.owned ? c.emoji : "🔒"}</span>
+              <span className="text-foreground">
+                {c.owned ? <CharmIcon id={c.id} /> : <IconLock size={20} />}
+              </span>
               <p className="font-serif-en text-base">{c.name}</p>
             </div>
             <p className="text-xs text-foreground/75 leading-snug mb-1">
               {c.desc}
             </p>
-            <p className="font-hand text-[11px] text-[hsl(var(--gold))]">
-              ✦ {c.effect}
+            <p className="font-hand text-[11px] text-[hsl(var(--gold))] inline-flex items-center gap-1">
+              <IconStarFour size={10} /> {c.effect}
             </p>
             {c.equipped && (
               <p className="font-hand text-[10px] text-muted-foreground mt-1">
@@ -210,7 +246,7 @@ const Profile = () => {
         {TITLES.map((t) => (
           <span
             key={t.id}
-            className={`px-3 py-1 text-xs border-2 rounded-sm ${
+            className={`px-3 py-1 text-xs border-2 rounded-sm inline-flex items-center gap-1.5 ${
               t.unlocked
                 ? t.active
                   ? "border-foreground bg-foreground text-background"
@@ -219,8 +255,9 @@ const Profile = () => {
             }`}
             title={t.desc}
           >
-            {t.unlocked ? "✦" : "🔒"} {t.name}
-            <span className="font-hand text-[10px] ml-1 opacity-70">
+            {t.unlocked ? <IconStarFour size={11} /> : <IconLock size={11} />}
+            {t.name}
+            <span className="font-hand text-[10px] opacity-70">
               {t.desc}
             </span>
           </span>
@@ -234,27 +271,19 @@ const Profile = () => {
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
         <div className="dashed-frame p-4">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            足迹
-          </p>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">足迹</p>
           <p className="font-hand text-xl mt-1">{MAP_PLACES.length} 处</p>
         </div>
         <div className="dashed-frame p-4">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            记录
-          </p>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">记录</p>
           <p className="font-hand text-xl mt-1">{RECORDS.length} 笔</p>
         </div>
         <div className="dashed-frame p-4">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            目标
-          </p>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">目标</p>
           <p className="font-hand text-xl mt-1">{GOALS.length} 个</p>
         </div>
         <div className="dashed-frame p-4">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            里程碑
-          </p>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">里程碑</p>
           <p className="font-hand text-xl mt-1">
             {doneMilestones}/{totalMilestones}
           </p>
@@ -267,9 +296,9 @@ const Profile = () => {
         <span className="flex-1 h-px bg-secondary" />
         <Link
           to="/codex"
-          className="font-hand text-sm text-muted-foreground hover:text-foreground"
+          className="font-hand text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1 hand-link"
         >
-          翻开图鉴 →
+          翻开图鉴 <IconArrowRight size={12} />
         </Link>
       </h3>
       <div className="grid md:grid-cols-4 gap-3 mb-10">
@@ -282,8 +311,12 @@ const Profile = () => {
               className="ink-card p-4"
               style={{ borderColor: m.color }}
             >
-              <p className="font-hand text-sm" style={{ color: m.color }}>
-                {m.emoji} {m.label}
+              <p
+                className="font-hand text-sm inline-flex items-center gap-1.5"
+                style={{ color: m.color }}
+              >
+                <CategoryIcon category={key} size={13} />
+                {m.label}
               </p>
               <div className="h-1.5 bg-secondary rounded-sm overflow-hidden mt-2 mb-2 border border-foreground/30">
                 <div
@@ -316,11 +349,11 @@ const Profile = () => {
             }`}
           >
             <div
-              className={`w-12 h-12 rounded-sm border-2 border-foreground flex items-center justify-center text-2xl flex-shrink-0 ${
+              className={`w-12 h-12 rounded-sm border-2 border-foreground flex items-center justify-center flex-shrink-0 ${
                 a.got ? "bg-accent" : "bg-secondary"
               }`}
             >
-              {a.got ? a.emoji : "?"}
+              {a.got ? <AchievementIcon id={a.id} /> : <IconLock size={20} />}
             </div>
             <div className="min-w-0">
               <p className="font-serif-en text-base leading-tight">{a.name}</p>
@@ -343,9 +376,9 @@ const Profile = () => {
         <span className="flex-1 h-px bg-secondary" />
         <Link
           to="/chronicle"
-          className="font-hand text-sm text-muted-foreground hover:text-foreground"
+          className="font-hand text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1 hand-link"
         >
-          翻开编年史 →
+          翻开编年史 <IconArrowRight size={12} />
         </Link>
       </h3>
       <div className="grid md:grid-cols-2 gap-3">
@@ -354,15 +387,16 @@ const Profile = () => {
           return (
             <div key={r.id} className="ink-card p-4">
               <div className="flex items-baseline justify-between mb-1">
-                <p className="font-hand text-xs text-muted-foreground">
-                  {r.date} · {r.weather} · 📍 {r.place}
+                <p className="font-hand text-xs text-muted-foreground inline-flex items-center gap-1.5">
+                  {r.date}
+                  <span className="text-foreground/30">·</span>
+                  <WeatherIcon symbol={r.weather} size={11} />
+                  <span className="text-foreground/30">·</span>
+                  <IconMapPin size={11} /> {r.place}
                 </p>
-                {m && (
-                  <span
-                    className="font-hand text-[11px]"
-                    style={{ color: m.color }}
-                  >
-                    {m.emoji}
+                {m && r.category && (
+                  <span style={{ color: m.color }}>
+                    <CategoryIcon category={r.category} size={12} />
                   </span>
                 )}
               </div>

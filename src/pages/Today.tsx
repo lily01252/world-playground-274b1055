@@ -6,6 +6,18 @@ import { RARITY_META } from "@/data/gamification";
 import { toast } from "sonner";
 import StreakLanternCard from "@/components/StreakLanternCard";
 import WeeklyBossCard from "@/components/WeeklyBossCard";
+import {
+  CategoryIcon,
+  IconArrowRight,
+  IconClock,
+  IconFlame,
+  IconMapPin,
+  IconSpark,
+  IconStarFour,
+  IconSword,
+  InkAvatar,
+  WeatherIcon,
+} from "@/components/HandIcon";
 
 const Today = () => {
   const main = QUESTS[1];
@@ -46,17 +58,17 @@ const Today = () => {
           今日副本
         </span>
         <span
-          className="absolute -top-3 right-6 px-2 py-0.5 text-[10px] tracking-widest font-bold border-2 bg-card"
+          className="absolute -top-3 right-6 px-2 py-0.5 text-[10px] tracking-widest font-bold border-2 bg-card inline-flex items-center gap-1"
           style={{ borderColor: mainRarity.color, color: mainRarity.color }}
         >
-          ◆ {mainRarity.label} · ×{mainRarity.xpMul} XP
+          <IconStarFour size={10} /> {mainRarity.label} · ×{mainRarity.xpMul} XP
         </span>
         <p
           className="font-hand text-sm flex items-center gap-2 mb-2 mt-2"
           style={{ color: CATEGORY_META[main.category].color }}
         >
           <span className="inline-block w-5 h-px bg-current" />
-          {CATEGORY_META[main.category].emoji}{" "}
+          <CategoryIcon category={main.category} size={14} />
           {CATEGORY_META[main.category].label} ·{" "}
           {CATEGORY_META[main.category].hand}
         </p>
@@ -89,8 +101,12 @@ const Today = () => {
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
               掉落
             </p>
-            <p className="font-hand text-base">
-              🔥 火之碎片 ×1 · ⚔️ BOSS 伤害 +12
+            <p className="font-hand text-base inline-flex items-center gap-1.5">
+              <IconFlame size={14} className="text-[hsl(var(--rust))]" />
+              火之碎片 ×1
+              <span className="text-foreground/30">·</span>
+              <IconSword size={14} />
+              BOSS 伤害 +12
             </p>
           </div>
         </div>
@@ -144,14 +160,18 @@ const Today = () => {
               style={{ boxShadow: `4px 4px 0 hsl(var(--foreground)), 0 0 18px ${r.glow}` }}
             >
               <div className="flex items-center justify-between mb-2">
-                <p className="font-hand text-xs" style={{ color: m.color }}>
-                  {m.emoji} {m.label}
+                <p
+                  className="font-hand text-xs inline-flex items-center gap-1.5"
+                  style={{ color: m.color }}
+                >
+                  <CategoryIcon category={q.category} size={12} />
+                  {m.label}
                 </p>
                 <span
-                  className="text-[10px] font-bold tracking-widest px-1.5 py-0.5 border rounded-sm"
+                  className="text-[10px] font-bold tracking-widest px-1.5 py-0.5 border rounded-sm inline-flex items-center gap-1"
                   style={{ borderColor: r.color, color: r.color }}
                 >
-                  ◆ {r.label}
+                  <IconStarFour size={9} /> {r.label}
                 </span>
               </div>
               <h4 className="font-serif-en text-lg mb-2">{q.title}</h4>
@@ -172,9 +192,9 @@ const Today = () => {
         <span className="flex-1 h-px bg-secondary" />
         <Link
           to="/goals"
-          className="font-hand text-sm text-muted-foreground hover:text-foreground"
+          className="font-hand text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1 hand-link"
         >
-          找长期搭子 →
+          找长期搭子 <IconArrowRight size={12} />
         </Link>
       </h3>
       <div className="grid md:grid-cols-3 gap-4 mb-12">
@@ -183,12 +203,12 @@ const Today = () => {
           return (
             <div key={sq.id} className="ink-card p-4">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 rounded-full border-2 border-foreground bg-secondary flex items-center justify-center text-sm">
-                  {sq.author.avatar}
-                </div>
-                <p className="font-hand text-xs">
+                <InkAvatar label={sq.author.name} size={28} />
+                <p className="font-hand text-xs inline-flex items-center gap-1">
                   {sq.author.name} 想{" "}
-                  <span style={{ color: m.color }}>{m.emoji}</span>
+                  <span style={{ color: m.color }}>
+                    <CategoryIcon category={sq.category} size={12} />
+                  </span>
                 </p>
               </div>
               <h4 className="font-serif-en text-base leading-snug mb-1">
@@ -197,19 +217,20 @@ const Today = () => {
               <p className="text-xs text-foreground/70 leading-relaxed line-clamp-2 mb-2">
                 {sq.desc}
               </p>
-              <p className="font-hand text-[11px] text-muted-foreground mb-3">
-                📍 {sq.place} · 🕐 {sq.date}
+              <p className="font-hand text-[11px] text-muted-foreground mb-3 inline-flex items-center gap-1.5">
+                <IconMapPin size={11} /> {sq.place}
+                <span className="text-foreground/30">·</span>
+                <IconClock size={11} /> {sq.date}
               </p>
               <div className="flex items-center justify-between">
-                <div className="flex -space-x-1.5">
+                <div className="flex -space-x-1.5 items-center">
                   {sq.joiners.slice(0, 4).map((p, i) => (
-                    <div
+                    <InkAvatar
                       key={i}
-                      className="w-5 h-5 rounded-full border border-foreground bg-card flex items-center justify-center text-[10px]"
-                      title={p.name}
-                    >
-                      {p.avatar}
-                    </div>
+                      label={p.name}
+                      size={20}
+                      tone="ink"
+                    />
                   ))}
                   <span className="ml-2 font-hand text-[11px] text-muted-foreground self-center">
                     {sq.joiners.length}/{sq.capacity}
@@ -217,9 +238,9 @@ const Today = () => {
                 </div>
                 <button
                   onClick={() => toast("我也去！已加入。")}
-                  className="text-xs font-hand px-2 py-1 border border-foreground rounded-sm hover:bg-foreground hover:text-background transition-colors"
+                  className="text-xs font-hand px-2 py-1 border border-foreground rounded-sm hover:bg-foreground hover:text-background transition-colors inline-flex items-center gap-1"
                 >
-                  ✦ 加入
+                  <IconSpark size={11} /> 加入
                 </button>
               </div>
             </div>
@@ -233,16 +254,20 @@ const Today = () => {
         <span className="flex-1 h-px bg-secondary" />
         <Link
           to="/chronicle"
-          className="font-hand text-sm text-muted-foreground hover:text-foreground"
+          className="font-hand text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1 hand-link"
         >
-          翻开编年史 →
+          翻开编年史 <IconArrowRight size={12} />
         </Link>
       </h3>
       <div className="grid md:grid-cols-2 gap-4">
         {recent.map((r) => (
           <div key={r.id} className="ink-card p-5">
-            <p className="font-hand text-xs text-muted-foreground mb-1">
-              {r.date} · {r.weather} · 📍 {r.place}
+            <p className="font-hand text-xs text-muted-foreground mb-1 inline-flex items-center gap-1.5">
+              {r.date}
+              <span className="text-foreground/30">·</span>
+              <WeatherIcon symbol={r.weather} size={11} />
+              <span className="text-foreground/30">·</span>
+              <IconMapPin size={11} /> {r.place}
             </p>
             <p className="text-sm text-foreground/85 leading-relaxed line-clamp-2 mb-2">
               {r.text}
@@ -254,7 +279,7 @@ const Today = () => {
         ))}
       </div>
 
-      {/* 连击 + 心魔 — 旅途的呼吸与阴影 */}
+      {/* 连击 + 心魔 */}
       <h3 className="font-serif-en text-lg mt-10 mb-4 flex items-center gap-3">
         旅途的呼吸
         <span className="flex-1 h-px bg-secondary" />

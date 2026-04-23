@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CATEGORY_META, RECORDS } from "@/data/world";
+import {
+  CategoryIcon,
+  IconArrowRight,
+  IconMapPin,
+  IconStarFour,
+  WeatherIcon,
+} from "@/components/HandIcon";
 
 type Tab = "scroll" | "chapter" | "weave";
 
@@ -58,8 +65,12 @@ const ScrollView = () => (
               style={{ background: m?.color ?? "hsl(var(--ink))" }}
             />
             <div className="ink-card p-5">
-              <p className="font-hand text-xs text-muted-foreground mb-1">
-                {r.date} · {r.weather} · 📍 {r.place}
+              <p className="font-hand text-xs text-muted-foreground mb-1 inline-flex items-center gap-1.5">
+                {r.date}
+                <span className="text-foreground/30">·</span>
+                <WeatherIcon symbol={r.weather} size={11} />
+                <span className="text-foreground/30">·</span>
+                <IconMapPin size={11} /> {r.place}
               </p>
               <p className="text-sm leading-relaxed text-foreground/90 mb-3">
                 {r.text}
@@ -75,8 +86,8 @@ const ScrollView = () => (
             </div>
             {i === 1 && (
               <div className="ml-2 mt-3 dashed-frame p-3 bg-accent/20">
-                <p className="font-hand text-xs text-muted-foreground">
-                  ⟡ 里程碑 · {r.date}
+                <p className="font-hand text-xs text-muted-foreground inline-flex items-center gap-1">
+                  <IconStarFour size={11} /> 里程碑 · {r.date}
                 </p>
                 <p className="font-serif-en text-base mt-1">勇气突破</p>
                 <p className="text-xs text-foreground/80">
@@ -93,7 +104,7 @@ const ScrollView = () => (
 
 const ChapterView = () => {
   const groups = Object.entries(CATEGORY_META).map(([k, m]) => ({
-    key: k,
+    key: k as keyof typeof CATEGORY_META,
     meta: m,
     items: RECORDS.filter((r) => r.category === k),
   }));
@@ -102,8 +113,9 @@ const ChapterView = () => {
     <div className="grid md:grid-cols-2 gap-5">
       {groups.map((g) => (
         <section key={g.key} className="ink-card p-5">
-          <p className="font-hand text-sm" style={{ color: g.meta.color }}>
-            {g.meta.emoji} 篇章 · {g.meta.label}
+          <p className="font-hand text-sm inline-flex items-center gap-1.5" style={{ color: g.meta.color }}>
+            <CategoryIcon category={g.key} size={13} />
+            篇章 · {g.meta.label}
           </p>
           <h3 className="font-serif-en text-xl mt-1 mb-3">
             {g.items.length} 笔印记
@@ -132,10 +144,9 @@ const ChapterView = () => {
         </section>
       ))}
 
-      {/* AI 叙事 */}
       <section className="ink-card p-6 md:col-span-2 bg-secondary/40">
-        <p className="font-hand text-sm text-muted-foreground mb-2">
-          ✧ AI 编年史 · 月度叙事
+        <p className="font-hand text-sm text-muted-foreground mb-2 inline-flex items-center gap-1.5">
+          <IconStarFour size={12} /> AI 编年史 · 月度叙事
         </p>
         <h3 className="font-serif-en text-xl mb-3">四月：你在练习"开口"</h3>
         <p className="text-sm leading-relaxed text-foreground/85">
@@ -151,6 +162,7 @@ const ChapterView = () => {
 
 const WeaveView = () => {
   const counts = Object.entries(CATEGORY_META).map(([k, m]) => ({
+    key: k as keyof typeof CATEGORY_META,
     meta: m,
     n: RECORDS.filter((r) => r.category === k).length,
   }));
@@ -164,8 +176,12 @@ const WeaveView = () => {
           {counts.map((c) => (
             <div key={c.meta.label}>
               <div className="flex justify-between text-xs mb-1">
-                <span className="font-hand" style={{ color: c.meta.color }}>
-                  {c.meta.emoji} {c.meta.label}
+                <span
+                  className="font-hand inline-flex items-center gap-1.5"
+                  style={{ color: c.meta.color }}
+                >
+                  <CategoryIcon category={c.key} size={12} />
+                  {c.meta.label}
                 </span>
                 <span className="text-muted-foreground">{c.n} 笔</span>
               </div>
@@ -209,9 +225,9 @@ const WeaveView = () => {
         </div>
         <Link
           to="/inner"
-          className="inline-block mt-5 font-hand text-sm underline underline-offset-4"
+          className="inline-flex items-center gap-1 mt-5 font-hand text-sm hand-link"
         >
-          → 去内心地形里看它们落在哪
+          去内心地形里看它们落在哪 <IconArrowRight size={12} />
         </Link>
       </div>
     </div>
