@@ -32,6 +32,17 @@ const QuestRecord = () => {
     return `${m.emoji} 这一笔，会落在你的「${m.terrain}」上。`;
   };
 
+  // 简单 hash 把地点映射到地图坐标（mock）
+  const placeHash = (s: string) => {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+    const x = 15 + (Math.abs(h) % 70);
+    const y = 15 + (Math.abs(h >> 8) % 60);
+    return { x, y };
+  };
+  const litPos = placeHash(place || quest.title);
+  const innerPos = placeHash(quest.id + feeling);
+
   const submit = () => {
     if (!text.trim()) {
       toast("写一个字也好，或者点跳过。");
