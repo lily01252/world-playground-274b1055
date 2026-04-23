@@ -27,14 +27,11 @@ const WorldMap = () => {
       <div>
         <p
           className="font-hand text-xs tracking-[0.4em] uppercase"
-          style={{ color: "hsl(var(--map-text) / 0.7)" }}
+          style={{ color: "hsl(var(--ink-faded))" }}
         >
           Fog Map
         </p>
-        <h2
-          className="text-2xl md:text-3xl font-serif-en mt-1"
-          style={{ color: "hsl(var(--map-text))", textShadow: "0 2px 8px hsl(0 0% 0% / 0.6)" }}
-        >
+        <h2 className="text-2xl md:text-3xl font-serif-en mt-1 text-foreground">
           你的版图
         </h2>
         <div className="flex gap-1 mt-3">
@@ -44,10 +41,9 @@ const WorldMap = () => {
               onClick={() => setYear(y)}
               className="px-3 py-1 text-xs rounded-full font-hand transition-colors"
               style={{
-                background:
-                  year === y ? "hsl(var(--map-text) / 0.18)" : "transparent",
-                border: `1px solid hsl(var(--map-text) / ${year === y ? 0.5 : 0.2})`,
-                color: "hsl(var(--map-text))",
+                background: year === y ? "hsl(var(--ink) / 0.1)" : "hsl(var(--cream) / 0.6)",
+                border: `1px solid hsl(var(--ink) / ${year === y ? 0.55 : 0.25})`,
+                color: "hsl(var(--ink))",
               }}
             >
               {y} 年
@@ -58,9 +54,9 @@ const WorldMap = () => {
       <button
         className="px-3 py-1.5 text-xs rounded-full font-hand"
         style={{
-          background: "hsl(var(--map-text) / 0.14)",
-          border: "1px solid hsl(var(--map-text) / 0.3)",
-          color: "hsl(var(--map-text))",
+          background: "hsl(var(--cream) / 0.7)",
+          border: "1px solid hsl(var(--ink) / 0.4)",
+          color: "hsl(var(--ink))",
         }}
       >
         分享
