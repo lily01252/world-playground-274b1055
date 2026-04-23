@@ -1,8 +1,11 @@
 import { ReactNode } from "react";
 
-// 一张"羊皮纸地图"画布：复古暖色调 + 墨线远山 + 雾气 + 网格 + 灯台
-// 通过 palette 切换"外部世界（暖金灯台）"和"内心地图（紫罗兰心灯）"两种调色
-export type MapPalette = "world" | "inner";
+// 一张"夜空地图"画布：深蓝夜空 + low-poly 远山 + 雾气 + 网格 + 灯台
+// palette:
+//   world      — 旧的羊皮纸暖色（兼容用，已不再用于 WorldMap）
+//   inner      — 内心地图（暖金 + 极光）
+//   worldNight — 外部世界夜空版（深蓝紫 + 暖灯，参考图）
+export type MapPalette = "world" | "inner" | "worldNight";
 
 const PALETTES: Record<
   MapPalette,
@@ -63,6 +66,21 @@ const PALETTES: Record<
       b: "var(--seal)",
       c: "var(--sky)",
     },
+  },
+  // 夜空版外部地图 —— 深蓝紫底 + 暖金灯台 + low-poly 山脉
+  worldNight: {
+    base: "var(--night-base)",
+    vignette: "var(--night-deep)",
+    fog: "var(--night-fog)",
+    grid: "var(--night-text)",
+    mountainFar: "var(--night-mt-far)",
+    mountainMid: "var(--night-mt-mid)",
+    mountainNear: "var(--night-mt-near)",
+    mountainHighlight: "var(--gold-bright)",
+    lantern: "var(--gold-bright)",
+    lanternGlow: "var(--gold)",
+    text: "var(--night-text)",
+    textSoft: "var(--night-text-soft)",
   },
 };
 
