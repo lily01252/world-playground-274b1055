@@ -1,6 +1,7 @@
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CATEGORY_META, QUESTS } from "@/data/world";
+import { CategoryIcon, IconStarFour } from "@/components/HandIcon";
 
 const QuestDetail = () => {
   const { id } = useParams();
@@ -10,20 +11,23 @@ const QuestDetail = () => {
 
   return (
     <article className="max-w-3xl mx-auto px-5 md:px-10 py-10">
-      <Link to="/" className="font-hand text-sm text-muted-foreground hover:text-foreground">
+      <Link to="/" className="font-hand text-sm text-muted-foreground hover:text-foreground hand-link">
         ← 回到今日
       </Link>
 
       <section className="ink-card p-6 md:p-8 mt-4 relative">
         <span
-          className="absolute -top-3 left-6 border border-foreground px-3 py-0.5 text-[11px] tracking-widest font-bold"
+          className="absolute -top-3 left-6 border border-foreground px-3 py-0.5 text-[11px] tracking-widest font-bold inline-flex items-center gap-1"
           style={{ background: m.color, color: "hsl(var(--cream))" }}
         >
-          {m.emoji} {m.label}
+          <CategoryIcon category={quest.category} size={11} /> {m.label}
         </span>
 
         <h2 className="font-serif-en text-3xl mt-2 mb-3">{quest.title}</h2>
-        <p className="text-base leading-relaxed text-foreground/85 border-l-[3px] pl-4 mb-6" style={{ borderColor: m.color }}>
+        <p
+          className="text-base leading-relaxed text-foreground/85 border-l-[3px] pl-4 mb-6"
+          style={{ borderColor: m.color }}
+        >
           {quest.desc}
         </p>
 
@@ -47,8 +51,8 @@ const QuestDetail = () => {
         </div>
 
         <div className="dashed-frame bg-secondary/40 p-4 mb-6 relative">
-          <span className="absolute -top-2.5 left-3 bg-secondary px-2 font-hand text-xs text-muted-foreground">
-            ✧ AI 引导 · 进入前的三个问题
+          <span className="absolute -top-2.5 left-3 bg-secondary px-2 font-hand text-xs text-muted-foreground inline-flex items-center gap-1">
+            <IconStarFour size={11} /> AI 引导 · 进入前的三个问题
           </span>
           <ul className="text-sm space-y-2 text-foreground/80 mt-1">
             <li>· 你最希望今天结束时，自己变成什么样子？</li>

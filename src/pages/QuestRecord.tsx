@@ -6,6 +6,17 @@ import { Input } from "@/components/ui/input";
 import { CATEGORY_META, QUESTS } from "@/data/world";
 import { toast } from "sonner";
 import StarTrailCelebration from "@/components/StarTrailCelebration";
+import {
+  CategoryIcon,
+  IconCamera,
+  IconMap,
+  IconMapPin,
+  IconMic,
+  IconScroll,
+  IconSpark,
+  IconStarFour,
+  IconTag,
+} from "@/components/HandIcon";
 
 const FEELINGS = ["轻盈", "平静", "沉重", "混沌", "明亮"] as const;
 type Feeling = (typeof FEELINGS)[number];
@@ -22,17 +33,15 @@ const QuestRecord = () => {
   const [step, setStep] = useState<"write" | "echo">("write");
   const [celebrating, setCelebrating] = useState(false);
 
-  // 简单的 mock "AI 回声"——实际接入时换成 Lovable AI Gateway
   const mockEcho = () => {
     if (!text.trim()) return "听到了，哪怕只是一个字，也算一笔。";
     const t = text.toLowerCase();
     if (t.includes("累") || t.includes("难")) return "听到了。累也是今天的一部分。";
     if (t.includes("说") || t.includes("讲")) return "今天你扩张了自己的领地。";
     if (t.includes("画") || t.includes("写")) return "丑也是一种认真。";
-    return `${m.emoji} 这一笔，会落在你的「${m.terrain}」上。`;
+    return `这一笔，会落在你的「${m.terrain}」上。`;
   };
 
-  // 简单 hash 把地点映射到地图坐标（mock）
   const placeHash = (s: string) => {
     let h = 0;
     for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
@@ -56,27 +65,34 @@ const QuestRecord = () => {
     return (
       <article className="max-w-2xl mx-auto px-5 md:px-10 py-10">
         <section className="ink-card p-8 text-center">
-          <p className="font-hand text-sm text-muted-foreground">
-            ✧ 此刻的回声
+          <p className="font-hand text-sm text-muted-foreground inline-flex items-center gap-1.5">
+            <IconStarFour size={12} /> 此刻的回声
           </p>
-          <h2 className="font-serif-en text-3xl mt-3 mb-6">{echo}</h2>
+          <h2 className="font-serif-en text-3xl mt-3 mb-6 ink-bloom">{echo}</h2>
 
           <div className="dashed-frame bg-secondary/40 p-5 text-left text-sm leading-relaxed mb-6">
             <p className="font-hand text-xs text-muted-foreground mb-2">
               这一笔将同时落在三处：
             </p>
-            <ul className="space-y-1 text-foreground/85">
-              <li>📍 外部世界 · {place || "未命名地点"} 留下了 1 处足迹</li>
-              <li>
-                <span style={{ color: m.color }}>{m.emoji} 内心地形</span> ·「{m.terrain}」长出了一个新的光点
+            <ul className="space-y-1.5 text-foreground/85">
+              <li className="inline-flex items-center gap-2">
+                <IconMapPin size={13} /> 外部世界 · {place || "未命名地点"} 留下了 1 处足迹
               </li>
-              <li>📜 编年史 · 今日新增 1 条 · 心情：{feeling}</li>
+              <li className="inline-flex items-center gap-2" style={{ color: m.color }}>
+                <CategoryIcon category={quest.category} size={13} />
+                <span className="text-foreground/85">
+                  内心地形 ·「{m.terrain}」长出了一个新的光点
+                </span>
+              </li>
+              <li className="inline-flex items-center gap-2">
+                <IconScroll size={13} /> 编年史 · 今日新增 1 条 · 心情：{feeling}
+              </li>
             </ul>
           </div>
 
           <div className="dashed-frame p-4 mb-6 text-left">
-            <p className="font-hand text-xs text-muted-foreground mb-2">
-              ✧ AI 想再问你一个问题（可以不答）
+            <p className="font-hand text-xs text-muted-foreground mb-2 inline-flex items-center gap-1.5">
+              <IconStarFour size={11} /> AI 想再问你一个问题（可以不答）
             </p>
             <p className="text-sm text-foreground/85">
               如果把今天这件事写成一句话送给一个月后的自己，你会说什么？
@@ -95,9 +111,9 @@ const QuestRecord = () => {
                   `/map?surface=inner&lit=${innerPos.x},${innerPos.y}&cat=${quest.category}`,
                 )
               }
-              className="bg-foreground text-background rounded-sm"
+              className="bg-foreground text-background rounded-sm inline-flex items-center gap-1"
             >
-              ✦ 去内心地图看光点亮起
+              <IconSpark size={13} /> 去内心地图看光点亮起
             </Button>
             <Button
               onClick={() =>
@@ -106,9 +122,9 @@ const QuestRecord = () => {
                 )
               }
               variant="outline"
-              className="border-2 border-foreground rounded-sm"
+              className="border-2 border-foreground rounded-sm inline-flex items-center gap-1"
             >
-              🗺️ 去外部地图看光点亮起
+              <IconMap size={13} /> 去外部地图看光点亮起
             </Button>
             <Button
               onClick={() => navigate("/")}
@@ -133,7 +149,7 @@ const QuestRecord = () => {
           setStep("echo");
         }}
       />
-      <Link to={`/quest/${quest.id}`} className="font-hand text-sm text-muted-foreground hover:text-foreground">
+      <Link to={`/quest/${quest.id}`} className="font-hand text-sm text-muted-foreground hover:text-foreground hand-link">
         ← 回到副本
       </Link>
 
@@ -193,9 +209,9 @@ const QuestRecord = () => {
 
         <div className="mt-5 dashed-frame p-3 text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
           <span className="font-hand">可附加：</span>
-          <button className="ink-tag">📷 随手拍</button>
-          <button className="ink-tag">🎙️ 一段语音</button>
-          <button className="ink-tag">🏷️ 标签</button>
+          <button className="ink-tag inline-flex items-center gap-1"><IconCamera size={12} /> 随手拍</button>
+          <button className="ink-tag inline-flex items-center gap-1"><IconMic size={12} /> 一段语音</button>
+          <button className="ink-tag inline-flex items-center gap-1"><IconTag size={12} /> 标签</button>
         </div>
 
         <div className="flex gap-3 mt-6 flex-wrap">

@@ -7,6 +7,36 @@ import { CATEGORY_META } from "@/data/world";
 import { GOALS, FRIEND_QUESTS, type Goal } from "@/data/goals";
 import StarTrailCelebration from "@/components/StarTrailCelebration";
 import { toast } from "sonner";
+import {
+  CategoryIcon,
+  IconBook,
+  IconCalendar,
+  IconClock,
+  IconEnvelope,
+  IconHourglass,
+  IconMap,
+  IconMapPin,
+  IconMegaphone,
+  IconMountain,
+  IconScroll,
+  IconSpark,
+  IconStarFour,
+  IconSwimmer,
+  IconUsers,
+  InkAvatar,
+} from "@/components/HandIcon";
+
+const GoalCover = ({ category }: { category: keyof typeof CATEGORY_META }) => {
+  // 用类别图标作为封面 — 一致的手绘风
+  const map = {
+    flourish: IconMountain,
+    courage: IconSwimmer,
+    create: IconScroll,
+    solitude: IconBook,
+  } as const;
+  const C = map[category];
+  return <C size={28} />;
+};
 
 const Goals = () => {
   const [tab, setTab] = useState<"mine" | "friends">("mine");
@@ -28,7 +58,6 @@ const Goals = () => {
             if (m.id !== mId) return m;
             const next = !m.done;
             if (next) {
-              // 触发庆祝
               setCelebrate({
                 show: true,
                 subtitle: `「${g.title}」· 里程碑「${m.title}」已点亮`,
@@ -97,11 +126,10 @@ const Goals = () => {
 
       {tab === "mine" && (
         <>
-          {/* 新建目标 */}
           {composing ? (
             <section className="ink-card p-5 mb-6">
-              <p className="font-hand text-sm text-muted-foreground mb-2">
-                ✧ 立下一个目标
+              <p className="font-hand text-sm text-muted-foreground mb-2 inline-flex items-center gap-1.5">
+                <IconStarFour size={12} /> 立下一个目标
               </p>
               <Input
                 value={draftTitle}
@@ -116,9 +144,12 @@ const Goals = () => {
                 rows={2}
                 className="bg-card border-foreground/40 mb-3"
               />
-              <div className="dashed-frame p-3 text-xs text-muted-foreground mb-4">
-                <span className="font-hand">✧ AI 会帮你做：</span>
-                自动拆出 3 - 5 个里程碑副本 · 推荐相关的今日小副本 · 在地图上标记目的地
+              <div className="dashed-frame p-3 text-xs text-muted-foreground mb-4 inline-flex items-start gap-2 w-full">
+                <IconStarFour size={12} className="mt-0.5 flex-shrink-0" />
+                <span>
+                  <span className="font-hand">AI 会帮你做：</span>
+                  自动拆出 3 - 5 个里程碑副本 · 推荐相关的今日小副本 · 在地图上标记目的地
+                </span>
               </div>
               <div className="flex gap-2">
                 <Button onClick={submitNewGoal} className="bg-foreground text-background rounded-sm">
@@ -156,16 +187,25 @@ const Goals = () => {
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-12 h-12 rounded-sm border-2 border-foreground bg-secondary flex items-center justify-center text-2xl"
-                        style={{ borderColor: m.color }}
+                        className="w-12 h-12 rounded-sm border-2 border-foreground bg-secondary flex items-center justify-center"
+                        style={{ borderColor: m.color, color: m.color }}
                       >
-                        {g.cover}
+                        <GoalCover category={g.category} />
                       </div>
                       <div>
                         <h3 className="font-serif-en text-lg leading-tight">{g.title}</h3>
-                        <p className="font-hand text-xs text-muted-foreground">
-                          {m.emoji} {m.label}
-                          {g.targetDate ? ` · 目标 ${g.targetDate}` : ""}
+                        <p
+                          className="font-hand text-xs text-muted-foreground inline-flex items-center gap-1.5"
+                          style={{ color: m.color }}
+                        >
+                          <CategoryIcon category={g.category} size={12} />
+                          {m.label}
+                          {g.targetDate ? (
+                            <>
+                              <span className="text-foreground/30">·</span>
+                              <IconCalendar size={11} /> {g.targetDate}
+                            </>
+                          ) : null}
                         </p>
                       </div>
                     </div>
@@ -178,7 +218,6 @@ const Goals = () => {
                     "{g.intent}"
                   </p>
 
-                  {/* 进度条：星轨样式 */}
                   <div className="relative h-2 bg-secondary rounded-sm overflow-hidden mb-4 border border-foreground/30">
                     <div
                       className="absolute inset-y-0 left-0 transition-all duration-700"
@@ -189,7 +228,6 @@ const Goals = () => {
                     />
                   </div>
 
-                  {/* 里程碑列表 */}
                   <ol className="space-y-1.5 mb-4">
                     {g.milestones.map((mile) => (
                       <li key={mile.id} className="flex items-start gap-2">
@@ -214,23 +252,14 @@ const Goals = () => {
                   </ol>
 
                   <div className="flex gap-2 flex-wrap text-xs">
-                    <Link
-                      to="/map"
-                      className="ink-tag font-hand hover:bg-secondary"
-                    >
-                      🗺️ 地图
+                    <Link to="/map" className="ink-tag font-hand hover:bg-secondary inline-flex items-center gap-1">
+                      <IconMap size={11} /> 地图
                     </Link>
-                    <Link
-                      to="/chronicle"
-                      className="ink-tag font-hand hover:bg-secondary"
-                    >
-                      📜 编年史
+                    <Link to="/chronicle" className="ink-tag font-hand hover:bg-secondary inline-flex items-center gap-1">
+                      <IconScroll size={11} /> 编年史
                     </Link>
-                    <Link
-                      to="/"
-                      className="ink-tag font-hand hover:bg-secondary"
-                    >
-                      ✦ 派生今日副本
+                    <Link to="/" className="ink-tag font-hand hover:bg-secondary inline-flex items-center gap-1">
+                      <IconStarFour size={11} /> 派生今日副本
                     </Link>
                   </div>
                 </section>
@@ -251,11 +280,10 @@ const FriendsCircle = () => {
 
   return (
     <>
-      {/* 发布 */}
       {posting ? (
         <section className="ink-card p-5 mb-6">
-          <p className="font-hand text-sm text-muted-foreground mb-2">
-            ✧ 发到搭子广场 · 让大家自选加入
+          <p className="font-hand text-sm text-muted-foreground mb-2 inline-flex items-center gap-1.5">
+            <IconStarFour size={12} /> 发到搭子广场 · 让大家自选加入
           </p>
           <Textarea
             value={draft}
@@ -265,10 +293,10 @@ const FriendsCircle = () => {
             className="bg-card border-foreground/40 mb-3"
           />
           <div className="flex gap-2 flex-wrap items-center">
-            <span className="ink-tag font-hand">📍 地点</span>
-            <span className="ink-tag font-hand">📅 周期</span>
-            <span className="ink-tag font-hand">👥 人数</span>
-            <span className="ink-tag font-hand">✦ AI 拆里程碑</span>
+            <span className="ink-tag font-hand inline-flex items-center gap-1"><IconMapPin size={11} /> 地点</span>
+            <span className="ink-tag font-hand inline-flex items-center gap-1"><IconCalendar size={11} /> 周期</span>
+            <span className="ink-tag font-hand inline-flex items-center gap-1"><IconUsers size={11} /> 人数</span>
+            <span className="ink-tag font-hand inline-flex items-center gap-1"><IconStarFour size={11} /> AI 拆里程碑</span>
             <Button
               onClick={() => {
                 if (!draft.trim()) return toast("写一句你想找搭子做的事。");
@@ -288,7 +316,7 @@ const FriendsCircle = () => {
             onClick={() => setPosting(true)}
             className="dashed-frame p-4 text-left hover:bg-secondary/40 transition-colors rounded-sm"
           >
-            <p className="font-hand text-sm">📣 发到搭子广场</p>
+            <p className="font-hand text-sm inline-flex items-center gap-1.5"><IconMegaphone size={14} /> 发到搭子广场</p>
             <p className="text-xs text-muted-foreground mt-1">
               "想找……搭子"——可拆解的长期事
             </p>
@@ -297,7 +325,7 @@ const FriendsCircle = () => {
             onClick={() => toast("挑一个朋友，邀请 ta 一起完成一件事。")}
             className="dashed-frame p-4 text-left hover:bg-secondary/40 transition-colors rounded-sm"
           >
-            <p className="font-hand text-sm">✉️ 定向邀请朋友</p>
+            <p className="font-hand text-sm inline-flex items-center gap-1.5"><IconEnvelope size={14} /> 定向邀请朋友</p>
             <p className="text-xs text-muted-foreground mt-1">
               一对一 · 一起做一件长期的事
             </p>
@@ -317,21 +345,23 @@ const FriendsCircle = () => {
             <section key={fq.id} className="ink-card p-5">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full border-2 border-foreground bg-secondary flex items-center justify-center text-base">
-                    {fq.author.avatar}
-                  </div>
+                  <InkAvatar label={fq.author.name} size={32} />
                   <div>
                     <p className="font-hand text-sm">{fq.author.name}</p>
-                    <p className="text-[10px] text-muted-foreground tracking-widest">
-                      {isInvite ? "✉️ 定向邀请" : "📣 搭子广场"}
+                    <p className="text-[10px] text-muted-foreground tracking-widest inline-flex items-center gap-1">
+                      {isInvite ? (
+                        <><IconEnvelope size={10} /> 定向邀请</>
+                      ) : (
+                        <><IconMegaphone size={10} /> 搭子广场</>
+                      )}
                     </p>
                   </div>
                 </div>
                 <span
-                  className="font-hand text-xs px-2 py-0.5 border rounded-sm"
+                  className="font-hand text-xs px-2 py-0.5 border rounded-sm inline-flex items-center gap-1"
                   style={{ borderColor: m.color, color: m.color }}
                 >
-                  {m.emoji} {m.label}
+                  <CategoryIcon category={fq.category} size={11} /> {m.label}
                 </span>
               </div>
 
@@ -341,16 +371,15 @@ const FriendsCircle = () => {
               </p>
 
               <div className="text-xs text-muted-foreground space-y-1 mb-3">
-                {fq.place && <p>📍 {fq.place}</p>}
-                <p>🕐 {fq.date}</p>
-                {fq.duration && <p>⏳ 预估 {fq.duration}</p>}
+                {fq.place && <p className="inline-flex items-center gap-1.5"><IconMapPin size={11} /> {fq.place}</p>}
+                <p className="inline-flex items-center gap-1.5"><IconClock size={11} /> {fq.date}</p>
+                {fq.duration && <p className="inline-flex items-center gap-1.5"><IconHourglass size={11} /> 预估 {fq.duration}</p>}
               </div>
 
-              {/* 里程碑预览 */}
               {fq.milestones && fq.milestones.length > 0 && (
                 <div className="dashed-frame p-2.5 mb-3">
-                  <p className="font-hand text-[11px] text-muted-foreground mb-1.5">
-                    ✧ AI 已拆出 {fq.milestones.length} 个里程碑
+                  <p className="font-hand text-[11px] text-muted-foreground mb-1.5 inline-flex items-center gap-1">
+                    <IconStarFour size={10} /> AI 已拆出 {fq.milestones.length} 个里程碑
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {fq.milestones.map((mi, i) => (
@@ -365,17 +394,10 @@ const FriendsCircle = () => {
                 </div>
               )}
 
-              {/* 参与者 */}
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex -space-x-1.5">
                   {(isInvite ? fq.invitees : fq.joiners)?.map((p, i) => (
-                    <div
-                      key={i}
-                      className="w-6 h-6 rounded-full border-2 border-foreground bg-card flex items-center justify-center text-xs"
-                      title={p.name}
-                    >
-                      {p.avatar}
-                    </div>
+                    <InkAvatar key={i} label={p.name} size={24} />
                   ))}
                 </div>
                 <span className="font-hand text-xs text-muted-foreground">
@@ -409,9 +431,9 @@ const FriendsCircle = () => {
                     <Button
                       size="sm"
                       onClick={() => toast("我也去！已加入。")}
-                      className="bg-foreground text-background rounded-sm"
+                      className="bg-foreground text-background rounded-sm inline-flex items-center gap-1"
                     >
-                      ✦ 我也去
+                      <IconSpark size={12} /> 我也去
                     </Button>
                     <Button
                       size="sm"
