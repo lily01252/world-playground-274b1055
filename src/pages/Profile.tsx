@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
 import { CATEGORY_META, PLAYER, RECORDS, MAP_PLACES } from "@/data/world";
 import { GOALS } from "@/data/goals";
+import {
+  PLAYER_TRAITS,
+  TITLES,
+  AVATAR_STAGES,
+  CHARMS,
+} from "@/data/gamification";
 
-// 个人页面：玩家信息 / 成就 / 记录 / 数据织锦
 const Profile = () => {
   const totalMilestones = GOALS.reduce((s, g) => s + g.milestones.length, 0);
   const doneMilestones = GOALS.reduce(
@@ -10,15 +15,42 @@ const Profile = () => {
     0,
   );
 
-  // 各类别记录数
   const categoryCounts = (
     Object.keys(CATEGORY_META) as (keyof typeof CATEGORY_META)[]
-  ).map((k) => ({
-    key: k,
-    count: RECORDS.filter((r) => r.category === k).length,
-  }));
+  ).map((k) => ({ key: k, count: RECORDS.filter((r) => r.category === k).length }));
 
-  // 成就徽章 — mock
+  // 当前化身阶段
+  const currentStage = [...AVATAR_STAGES]
+    .reverse()
+    .find((s) => PLAYER.level >= s.lv) ?? AVATAR_STAGES[0];
+  const nextStage = AVATAR_STAGES.find((s) => s.lv > PLAYER.level);
+  const activeTitle = TITLES.find((t) => t.active);
+  const equippedCharm = CHARMS.find((c) => c.equipped);
+
+  // 雷达图坐标
+  const traitKeys: (keyof typeof PLAYER_TRAITS)[] = [
+    "courage",
+    "create",
+    "flourish",
+    "solitude",
+  ];
+  const radarPoints = traitKeys
+    .map((k, i) => {
+      const angle = (Math.PI * 2 * i) / 4 - Math.PI / 2;
+      const r = (PLAYER_TRAITS[k] / 100) * 42;
+      const x = 50 + r * Math.cos(angle);
+      const y = 50 + r * Math.sin(angle);
+      return `${x},${y}`;
+    })
+    .join(" ");
+  const axisPoints = traitKeys.map((_, i) => {
+    const angle = (Math.PI * 2 * i) / 4 - Math.PI / 2;
+    return {
+      x: 50 + 42 * Math.cos(angle),
+      y: 50 + 42 * Math.sin(angle),
+    };
+  });
+
   const achievements = [
     { id: "a-1", emoji: "🌅", name: "破晓初行", desc: "完成第一个副本", got: true },
     { id: "a-2", emoji: "🗝️", name: "勇气钥匙", desc: "完成 5 次勇气试炼", got: true },
@@ -30,34 +62,170 @@ const Profile = () => {
 
   return (
     <article className="max-w-5xl mx-auto px-5 md:px-10 py-8">
-      {/* 玩家头部 */}
-      <header className="ink-card p-6 md:p-8 mb-8 flex items-center gap-5 flex-wrap">
-        <div className="w-20 h-20 rounded-sm border-2 border-foreground bg-accent flex items-center justify-center font-serif-en text-3xl flex-shrink-0">
-          ✦
-        </div>
-        <div className="flex-1 min-w-[200px]">
-          <p className="font-hand text-sm text-muted-foreground">Player</p>
-          <h2 className="text-2xl md:text-3xl font-serif-en">{PLAYER.name}</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            等级 {PLAYER.level} · 已点亮 {PLAYER.placesLit} 处 · 写下{" "}
-            {PLAYER.records} 笔
-          </p>
-          <div className="mt-3">
-            <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
-              <span>XP</span>
-              <span>
-                {PLAYER.xp} / {PLAYER.xpMax}
+      {/* 角色面板 */}
+      <header className="ink-card p-6 md:p-8 mb-8">
+        <div className="grid md:grid-cols-[auto_1fr_auto] gap-6 items-center">
+          {/* 化身 */}
+          <div className="flex flex-col items-center">
+            <div className="relative w-24 h-24 rounded-sm border-2 border-foreground bg-accent flex items-center justify-center font-serif-en text-5xl">
+              {currentStage.sigil}
+              <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 text-[10px] tracking-widest font-bold border border-foreground bg-card whitespace-nowrap">
+                Lv.{PLAYER.level}
               </span>
             </div>
-            <div className="h-2 border border-foreground bg-secondary overflow-hidden rounded-sm">
-              <div
-                className="h-full bg-accent"
-                style={{ width: `${(PLAYER.xp / PLAYER.xpMax) * 100}%` }}
-              />
+            <p className="font-hand text-xs text-muted-foreground mt-3">
+              化身 · {currentStage.desc}
+            </p>
+          </div>
+
+          {/* 主信息 */}
+          <div className="min-w-0">
+            <p className="font-hand text-sm text-muted-foreground">Player</p>
+            <h2 className="text-2xl md:text-3xl font-serif-en">
+              {PLAYER.name}
+            </h2>
+            {activeTitle && (
+              <span className="inline-block mt-1 px-2 py-0.5 text-xs border-2 border-foreground bg-secondary rounded-sm">
+                ✦ {activeTitle.name}
+              </span>
+            )}
+            <div className="mt-3">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+                <span>XP</span>
+                <span>
+                  {PLAYER.xp} / {PLAYER.xpMax}
+                  {nextStage && ` · 距离「${nextStage.desc}」 ${nextStage.lv - PLAYER.level} 级`}
+                </span>
+              </div>
+              <div className="h-2 border border-foreground bg-secondary overflow-hidden rounded-sm">
+                <div
+                  className="h-full bg-accent"
+                  style={{ width: `${(PLAYER.xp / PLAYER.xpMax) * 100}%` }}
+                />
+              </div>
             </div>
+          </div>
+
+          {/* 雷达图 */}
+          <div className="w-40 h-40 mx-auto">
+            <svg viewBox="0 0 100 100" className="w-full h-full">
+              {[20, 30, 40].map((r) => (
+                <polygon
+                  key={r}
+                  points={[0, 1, 2, 3]
+                    .map((i) => {
+                      const a = (Math.PI * 2 * i) / 4 - Math.PI / 2;
+                      return `${50 + r * Math.cos(a)},${50 + r * Math.sin(a)}`;
+                    })
+                    .join(" ")}
+                  fill="none"
+                  stroke="hsl(var(--ink) / 0.2)"
+                  strokeWidth="0.4"
+                />
+              ))}
+              {axisPoints.map((p, i) => (
+                <line
+                  key={i}
+                  x1="50"
+                  y1="50"
+                  x2={p.x}
+                  y2={p.y}
+                  stroke="hsl(var(--ink) / 0.25)"
+                  strokeWidth="0.3"
+                />
+              ))}
+              <polygon
+                points={radarPoints}
+                fill="hsl(var(--gold) / 0.35)"
+                stroke="hsl(var(--gold))"
+                strokeWidth="0.7"
+              />
+              {traitKeys.map((k, i) => {
+                const a = (Math.PI * 2 * i) / 4 - Math.PI / 2;
+                const x = 50 + 48 * Math.cos(a);
+                const y = 50 + 48 * Math.sin(a);
+                return (
+                  <text
+                    key={k}
+                    x={x}
+                    y={y}
+                    fontSize="6"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fill={CATEGORY_META[k].color}
+                    style={{ fontFamily: "Caveat, cursive" }}
+                  >
+                    {CATEGORY_META[k].emoji} {PLAYER_TRAITS[k]}
+                  </text>
+                );
+              })}
+            </svg>
           </div>
         </div>
       </header>
+
+      {/* 装备护符 */}
+      <h3 className="font-serif-en text-lg mb-4 flex items-center gap-3">
+        心境护符 · 装备一枚
+        <span className="flex-1 h-px bg-secondary" />
+        {equippedCharm && (
+          <span className="font-hand text-xs text-muted-foreground">
+            当前：{equippedCharm.emoji} {equippedCharm.name}
+          </span>
+        )}
+      </h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+        {CHARMS.map((c) => (
+          <div
+            key={c.id}
+            className={`ink-card p-4 ${!c.owned ? "opacity-50" : ""} ${
+              c.equipped ? "ring-2 ring-[hsl(var(--gold))]" : ""
+            }`}
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl">{c.owned ? c.emoji : "🔒"}</span>
+              <p className="font-serif-en text-base">{c.name}</p>
+            </div>
+            <p className="text-xs text-foreground/75 leading-snug mb-1">
+              {c.desc}
+            </p>
+            <p className="font-hand text-[11px] text-[hsl(var(--gold))]">
+              ✦ {c.effect}
+            </p>
+            {c.equipped && (
+              <p className="font-hand text-[10px] text-muted-foreground mt-1">
+                · 已装备 ·
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* 称号 */}
+      <h3 className="font-serif-en text-lg mb-4 flex items-center gap-3">
+        称号收藏
+        <span className="flex-1 h-px bg-secondary" />
+      </h3>
+      <div className="flex flex-wrap gap-2 mb-10">
+        {TITLES.map((t) => (
+          <span
+            key={t.id}
+            className={`px-3 py-1 text-xs border-2 rounded-sm ${
+              t.unlocked
+                ? t.active
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-foreground bg-card"
+                : "border-foreground/30 text-muted-foreground bg-secondary/40"
+            }`}
+            title={t.desc}
+          >
+            {t.unlocked ? "✦" : "🔒"} {t.name}
+            <span className="font-hand text-[10px] ml-1 opacity-70">
+              {t.desc}
+            </span>
+          </span>
+        ))}
+      </div>
 
       {/* 数据织锦 */}
       <h3 className="font-serif-en text-lg mb-4 flex items-center gap-3">
@@ -97,6 +265,12 @@ const Profile = () => {
       <h3 className="font-serif-en text-lg mb-4 flex items-center gap-3">
         四类印记分布
         <span className="flex-1 h-px bg-secondary" />
+        <Link
+          to="/codex"
+          className="font-hand text-sm text-muted-foreground hover:text-foreground"
+        >
+          翻开图鉴 →
+        </Link>
       </h3>
       <div className="grid md:grid-cols-4 gap-3 mb-10">
         {categoryCounts.map(({ key, count }) => {

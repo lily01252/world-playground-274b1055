@@ -45,6 +45,7 @@ export type Quest = {
   difficulty: "易" | "中" | "难";
   xp: number;
   status: "available" | "in_progress" | "done";
+  rarity: "common" | "rare" | "epic" | "legendary";
 };
 
 export const QUESTS: Quest[] = [
@@ -56,6 +57,7 @@ export const QUESTS: Quest[] = [
     difficulty: "易",
     xp: 20,
     status: "available",
+    rarity: "common",
   },
   {
     id: "q-002",
@@ -65,6 +67,7 @@ export const QUESTS: Quest[] = [
     difficulty: "中",
     xp: 40,
     status: "available",
+    rarity: "epic",
   },
   {
     id: "q-003",
@@ -74,6 +77,7 @@ export const QUESTS: Quest[] = [
     difficulty: "易",
     xp: 15,
     status: "available",
+    rarity: "common",
   },
   {
     id: "q-004",
@@ -83,6 +87,7 @@ export const QUESTS: Quest[] = [
     difficulty: "易",
     xp: 25,
     status: "available",
+    rarity: "rare",
   },
   {
     id: "q-005",
@@ -92,6 +97,7 @@ export const QUESTS: Quest[] = [
     difficulty: "难",
     xp: 60,
     status: "available",
+    rarity: "legendary",
   },
 ];
 
