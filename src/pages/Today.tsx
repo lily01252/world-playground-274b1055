@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CATEGORY_META, QUESTS, RECORDS, PLAYER } from "@/data/world";
 import { SOCIAL_QUESTS } from "@/data/goals";
-import { RARITY_META, COMBO, WEEKLY_BOSS } from "@/data/gamification";
+import { RARITY_META } from "@/data/gamification";
 import { toast } from "sonner";
+import StreakLanternCard from "@/components/StreakLanternCard";
+import WeeklyBossCard from "@/components/WeeklyBossCard";
 
 const Today = () => {
   const main = QUESTS[1];
@@ -16,7 +18,6 @@ const Today = () => {
   });
 
   const mainRarity = RARITY_META[main.rarity];
-  const bossPct = (WEEKLY_BOSS.hp / WEEKLY_BOSS.hpMax) * 100;
 
   return (
     <article className="max-w-4xl mx-auto px-5 md:px-10 py-10 md:py-14">
@@ -33,104 +34,6 @@ const Today = () => {
         </div>
         <span className="stamp">每日一封 · 等你拆开</span>
       </header>
-
-      {/* 连击 + BOSS 双卡 */}
-      <div className="grid md:grid-cols-2 gap-4 mb-8">
-        {/* 连击卡 */}
-        <section className="ink-card p-5">
-          <div className="flex items-center justify-between mb-2">
-            <p className="font-hand text-sm text-muted-foreground">
-              ✦ 连续记录
-            </p>
-            <span className="font-hand text-xs text-muted-foreground">
-              最长 {COMBO.best} 天
-            </span>
-          </div>
-          <p className="font-serif-en text-3xl mb-3">
-            {COMBO.current}
-            <span className="text-base text-muted-foreground ml-1">天</span>
-          </p>
-          <div className="flex gap-1">
-            {COMBO.last14.map((d, i) => (
-              <span
-                key={i}
-                className={`flex-1 h-5 rounded-sm border ${
-                  d
-                    ? "bg-[hsl(var(--gold))] border-foreground"
-                    : "bg-secondary border-foreground/30"
-                }`}
-                title={d ? "已记录" : "空白"}
-              />
-            ))}
-          </div>
-          <p className="font-hand text-xs text-muted-foreground mt-2">
-            最近 14 天 · 不必每天都满，留白也算节奏
-          </p>
-        </section>
-
-        {/* 每周 BOSS */}
-        <section
-          className="ink-card p-5 pt-6 relative"
-          style={{ borderColor: "hsl(var(--seal))" }}
-        >
-          <span
-            className="absolute -top-2.5 left-4 px-2 py-0.5 text-[10px] tracking-widest font-bold border-2 rounded-sm"
-            style={{
-              borderColor: "hsl(var(--seal))",
-              background: "hsl(var(--cream))",
-              color: "hsl(var(--seal))",
-            }}
-          >
-            本周心魔
-          </span>
-          <div className="flex items-start gap-3">
-            <div
-              className="w-12 h-12 rounded-sm border-2 flex items-center justify-center text-2xl flex-shrink-0"
-              style={{
-                borderColor: "hsl(var(--seal))",
-                background: "hsl(var(--parchment-dark))",
-              }}
-            >
-              {WEEKLY_BOSS.emoji}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="font-serif-en text-lg leading-tight">
-                {WEEKLY_BOSS.name}
-              </p>
-              <p className="text-xs text-foreground/70 leading-snug mt-1">
-                {WEEKLY_BOSS.desc}
-              </p>
-            </div>
-          </div>
-          <div className="mt-3">
-            <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground mb-1 gap-2">
-              <span>HP</span>
-              <span className="font-hand normal-case tracking-normal text-[11px]">
-                {WEEKLY_BOSS.hp} / {WEEKLY_BOSS.hpMax} · 还剩 {WEEKLY_BOSS.endsIn}
-              </span>
-            </div>
-            <div className="h-2 border border-foreground bg-secondary overflow-hidden rounded-sm">
-              <div
-                className="h-full transition-all"
-                style={{
-                  width: `${bossPct}%`,
-                  background:
-                    "linear-gradient(90deg, hsl(var(--seal)), hsl(var(--rust)))",
-                }}
-              />
-            </div>
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-hand text-[11px] text-muted-foreground">
-            <span>
-              ⚔️ 弱点：{CATEGORY_META[WEEKLY_BOSS.weakness].emoji}{" "}
-              {CATEGORY_META[WEEKLY_BOSS.weakness].label}
-            </span>
-            <span className="text-foreground/30">·</span>
-            <span>🎁 奖励：{WEEKLY_BOSS.reward}</span>
-          </div>
-        </section>
-
-      </div>
 
       {/* 主线副本 */}
       <section
@@ -349,6 +252,19 @@ const Today = () => {
             </p>
           </div>
         ))}
+      </div>
+
+      {/* 连击 + 心魔 — 旅途的呼吸与阴影 */}
+      <h3 className="font-serif-en text-lg mt-12 mb-4 flex items-center gap-3">
+        旅途的呼吸
+        <span className="flex-1 h-px bg-secondary" />
+        <span className="font-hand text-xs text-muted-foreground tracking-wider">
+          节奏 · 阴影
+        </span>
+      </h3>
+      <div className="grid md:grid-cols-2 gap-4">
+        <StreakLanternCard />
+        <WeeklyBossCard />
       </div>
     </article>
   );
