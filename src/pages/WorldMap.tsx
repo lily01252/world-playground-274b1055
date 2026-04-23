@@ -190,6 +190,7 @@ const WorldMap = () => {
             <span>✦</span>
           </div>
         </NightMapCanvas>
+        </div>
 
         {/* 底部统计 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 text-sm">
