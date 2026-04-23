@@ -27,6 +27,17 @@
     --rust: 14 68% 39%;
     --seal: 0 67% 32%;
 
+    /* 夜空版地图（外部世界） */
+    --night-base: 222 38% 12%;
+    --night-deep: 226 42% 6%;
+    --night-fog: 228 30% 22%;
+    --night-text: 40 38% 88%;
+    --night-text-soft: 40 18% 65%;
+    --night-mt-far: 226 28% 22%;
+    --night-mt-mid: 218 22% 30%;
+    --night-mt-near: 32 28% 32%;
+    --night-panel: 224 30% 14%;
+
     --card: 44 67% 95%;
     --card-foreground: 30 78% 8%;
 
