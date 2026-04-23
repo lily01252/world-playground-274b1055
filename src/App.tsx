@@ -9,6 +9,7 @@ import Goals from "./pages/Goals";
 import MapHub from "./pages/MapHub";
 import Chronicle from "./pages/Chronicle";
 import Profile from "./pages/Profile";
+import Codex from "./pages/Codex";
 import QuestDetail from "./pages/QuestDetail";
 import QuestRecord from "./pages/QuestRecord";
 import NotFound from "./pages/NotFound.tsx";
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/map" element={<MapHub />} />
             <Route path="/chronicle" element={<Chronicle />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/codex" element={<Codex />} />
             <Route path="/quest/:id" element={<QuestDetail />} />
             <Route path="/quest/:id/record" element={<QuestRecord />} />
           </Route>
