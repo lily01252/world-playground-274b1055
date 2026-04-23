@@ -88,7 +88,8 @@ const WorldMap = () => {
       </header>
 
       <div className="ink-card p-3 md:p-5">
-        <NightMapCanvas palette="world" aspectRatio="16 / 11" topOverlay={topOverlay}>
+        <div style={{ filter: "sepia(0.18) saturate(0.92)" }}>
+          <NightMapCanvas palette="world" aspectRatio="16 / 11" topOverlay={topOverlay}>
           {/* 已点亮地点：灯台闪烁 */}
           {MAP_PLACES.map((p, i) => (
             <Lantern
@@ -189,6 +190,7 @@ const WorldMap = () => {
             <span>✦</span>
           </div>
         </NightMapCanvas>
+        </div>
 
         {/* 底部统计 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 text-sm">

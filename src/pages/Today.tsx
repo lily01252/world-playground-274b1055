@@ -70,11 +70,11 @@ const Today = () => {
 
         {/* 每周 BOSS */}
         <section
-          className="ink-card p-5 relative overflow-hidden"
+          className="ink-card p-5 pt-6 relative"
           style={{ borderColor: "hsl(var(--seal))" }}
         >
           <span
-            className="absolute -top-3 left-5 px-2 py-0.5 text-[10px] tracking-widest font-bold border-2"
+            className="absolute -top-2.5 left-4 px-2 py-0.5 text-[10px] tracking-widest font-bold border-2 rounded-sm"
             style={{
               borderColor: "hsl(var(--seal))",
               background: "hsl(var(--cream))",
@@ -83,7 +83,7 @@ const Today = () => {
           >
             本周心魔
           </span>
-          <div className="flex items-start gap-3 mt-1">
+          <div className="flex items-start gap-3">
             <div
               className="w-12 h-12 rounded-sm border-2 flex items-center justify-center text-2xl flex-shrink-0"
               style={{
@@ -97,17 +97,16 @@ const Today = () => {
               <p className="font-serif-en text-lg leading-tight">
                 {WEEKLY_BOSS.name}
               </p>
-              <p className="text-xs text-foreground/70 leading-snug mt-0.5">
+              <p className="text-xs text-foreground/70 leading-snug mt-1">
                 {WEEKLY_BOSS.desc}
               </p>
             </div>
           </div>
           <div className="mt-3">
-            <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+            <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground mb-1 gap-2">
               <span>HP</span>
-              <span>
-                {WEEKLY_BOSS.hp} / {WEEKLY_BOSS.hpMax} · 还剩{" "}
-                {WEEKLY_BOSS.endsIn}
+              <span className="font-hand normal-case tracking-normal text-[11px]">
+                {WEEKLY_BOSS.hp} / {WEEKLY_BOSS.hpMax} · 还剩 {WEEKLY_BOSS.endsIn}
               </span>
             </div>
             <div className="h-2 border border-foreground bg-secondary overflow-hidden rounded-sm">
@@ -121,12 +120,16 @@ const Today = () => {
               />
             </div>
           </div>
-          <p className="font-hand text-[11px] text-muted-foreground mt-2">
-            ⚔️ 弱点：{CATEGORY_META[WEEKLY_BOSS.weakness].emoji}{" "}
-            {CATEGORY_META[WEEKLY_BOSS.weakness].label} · 奖励：
-            {WEEKLY_BOSS.reward}
-          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-hand text-[11px] text-muted-foreground">
+            <span>
+              ⚔️ 弱点：{CATEGORY_META[WEEKLY_BOSS.weakness].emoji}{" "}
+              {CATEGORY_META[WEEKLY_BOSS.weakness].label}
+            </span>
+            <span className="text-foreground/30">·</span>
+            <span>🎁 奖励：{WEEKLY_BOSS.reward}</span>
+          </div>
         </section>
+
       </div>
 
       {/* 主线副本 */}
