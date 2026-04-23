@@ -342,6 +342,9 @@ export const Lantern = ({
   glow,
   size = 12,
   flag = false,
+  labelColor,
+  labelBg,
+  labelBorder,
 }: {
   x: number;
   y: number;
@@ -350,9 +353,15 @@ export const Lantern = ({
   glow?: string;
   size?: number;
   flag?: boolean;
+  labelColor?: string;
+  labelBg?: string;
+  labelBorder?: string;
 }) => {
   const c = color ?? "hsl(var(--gold))";
   const g = glow ?? "hsl(var(--gold-bright))";
+  const lc = labelColor ?? "hsl(var(--ink))";
+  const lbg = labelBg ?? "hsl(var(--cream) / 0.85)";
+  const lbd = labelBorder ?? "hsl(var(--ink) / 0.4)";
   return (
     <button
       className="absolute -translate-x-1/2 -translate-y-1/2 group"
@@ -374,7 +383,7 @@ export const Lantern = ({
           {/* 旗杆 */}
           <span
             className="absolute left-1/2 -translate-x-1/2 bottom-0 w-px"
-            style={{ height: size * 1.6, background: "hsl(var(--ink))" }}
+            style={{ height: size * 1.6, background: lc }}
           />
           {/* 旗面 */}
           <span
@@ -383,7 +392,7 @@ export const Lantern = ({
               width: size * 0.9,
               height: size * 0.55,
               background: c,
-              border: "1px solid hsl(var(--ink))",
+              border: `1px solid ${lc}`,
               clipPath: "polygon(0 0, 100% 0, 75% 50%, 100% 100%, 0 100%)",
               animation: "lanternBlink 2.2s ease-in-out infinite",
             }}
@@ -396,7 +405,7 @@ export const Lantern = ({
             width: size,
             height: size,
             background: c,
-            border: "1.5px solid hsl(var(--ink))",
+            border: `1.5px solid ${lc}`,
             boxShadow: `0 0 ${size * 0.8}px ${size / 3}px ${g}`,
             animation: "lanternBlink 2.4s ease-in-out infinite",
           }}
@@ -407,9 +416,9 @@ export const Lantern = ({
           className="absolute left-1/2 -translate-x-1/2 mt-1.5 whitespace-nowrap font-hand text-[11px] px-1.5 py-0.5 rounded-sm pointer-events-none"
           style={{
             top: "100%",
-            color: "hsl(var(--ink))",
-            background: "hsl(var(--cream) / 0.85)",
-            border: "1px solid hsl(var(--ink) / 0.4)",
+            color: lc,
+            background: lbg,
+            border: `1px solid ${lbd}`,
           }}
         >
           {label}
@@ -420,3 +429,4 @@ export const Lantern = ({
 };
 
 export default NightMapCanvas;
+

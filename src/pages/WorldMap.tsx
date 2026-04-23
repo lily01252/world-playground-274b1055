@@ -2,7 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CATEGORY_META, MAP_PLACES, RECORDS } from "@/data/world";
 import NightMapCanvas, { Lantern } from "@/components/NightMapCanvas";
-import { IconCompass, IconShare, IconMapPin } from "@/components/HandIcon";
+import { IconCompass, IconMapPin, IconArrowRight } from "@/components/HandIcon";
 
 // 外部世界地图：深蓝夜空 + low-poly 山脉 + 流动星云 + 闪烁灯台
 const WorldMap = () => {
@@ -54,7 +54,7 @@ const WorldMap = () => {
           color: "hsl(var(--night-text) / 0.85)",
         }}
       >
-        <IconShare size={12} /> 分享
+        <IconArrowRight size={12} /> 分享
       </button>
     </div>
   );
