@@ -87,6 +87,32 @@ const WorldMap = () => {
                 <circle cx="2" cy="2" r="1.2" fill="hsl(var(--ink) / 0.18)" />
                 <circle cx="4" cy="4" r="0.8" fill="hsl(var(--ink) / 0.12)" />
               </pattern>
+              {/* 反向 mask：白底 + 黑色露出，作用在迷雾层上（黑色 = 透明） */}
+              <radialGradient id="hide" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="black" />
+                <stop offset="55%" stopColor="black" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="white" />
+              </radialGradient>
+              <mask id="fogHideMask">
+                <rect width="100" height="56" fill="white" />
+                {MAP_PLACES.map((p) => (
+                  <circle
+                    key={p.name}
+                    cx={p.x}
+                    cy={p.y * 0.56}
+                    r={5 + Math.min(p.count, 5)}
+                    fill="url(#hide)"
+                  />
+                ))}
+                {lit && lit.length === 2 && (
+                  <circle
+                    cx={Number(lit[0])}
+                    cy={Number(lit[1]) * 0.56}
+                    r="9"
+                    fill="url(#hide)"
+                  />
+                )}
+              </mask>
             </defs>
 
             {/* 海 / 雾底 */}
@@ -107,35 +133,14 @@ const WorldMap = () => {
               <path d="M50 20 Q56 28 52 36 Q48 42 60 46" fill="none" stroke="hsl(var(--sky))" strokeWidth="0.5" opacity="0.6" />
             </g>
 
-            {/* 迷雾覆盖层（除露出区域外，全部覆盖） */}
+            {/* 迷雾覆盖层 */}
             <rect
               width="100"
               height="56"
               fill="url(#thickFog)"
-              opacity="0.92"
-              style={{ mask: "url(#fogMaskInverted)" }}
+              opacity="0.85"
+              mask="url(#fogHideMask)"
             />
-            <mask id="fogMaskInverted">
-              <rect width="100" height="56" fill="white" />
-              {MAP_PLACES.map((p) => (
-                <circle
-                  key={p.name}
-                  cx={p.x}
-                  cy={p.y * 0.56}
-                  r={5 + Math.min(p.count, 5)}
-                  fill="url(#reveal)"
-                  style={{ mixBlendMode: "multiply" }}
-                />
-              ))}
-              {lit && lit.length === 2 && (
-                <circle
-                  cx={Number(lit[0])}
-                  cy={Number(lit[1]) * 0.56}
-                  r="9"
-                  fill="url(#reveal)"
-                />
-              )}
-            </mask>
 
             {/* 已点亮足迹光晕 */}
             {MAP_PLACES.map((p) => (
