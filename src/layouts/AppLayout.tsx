@@ -75,7 +75,7 @@ export default function AppLayout() {
         </NavLink>
       </header>
 
-      <main className="relative z-0">
+      <main key={location.pathname} className="relative z-0 paper-in">
         <Outlet />
       </main>
     </div>
