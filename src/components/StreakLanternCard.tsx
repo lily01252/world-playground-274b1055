@@ -1,6 +1,5 @@
 import { COMBO } from "@/data/gamification";
 
-// 连击卡：14 盏灯笼沿一条墨线点亮 — 与地图风格一致的羊皮纸 + 灯火
 const StreakLanternCard = () => {
   const total = COMBO.last14.length;
   const W = 320;
@@ -9,46 +8,35 @@ const StreakLanternCard = () => {
 
   return (
     <section
-      className="ink-card p-5 pt-7 relative overflow-hidden"
+      className="ink-card p-5 relative"
       style={{
         background:
           "radial-gradient(120% 80% at 0% 0%, hsl(var(--cream)) 0%, hsl(var(--parchment)) 60%, hsl(var(--parchment-dark)) 100%)",
-        filter: "sepia(0.12) saturate(0.95)",
       }}
     >
-      <span
-        className="absolute -top-2.5 left-4 px-2 py-0.5 text-[10px] tracking-widest font-bold border-2 rounded-sm z-10"
-        style={{
-          borderColor: "hsl(var(--ink))",
-          background: "hsl(var(--cream))",
-          color: "hsl(var(--ink))",
-        }}
-      >
-        连续记录
-      </span>
-
-      <div className="flex items-end justify-between mb-3">
-        <div>
-          <p className="font-serif-en text-4xl leading-none">
-            {COMBO.current}
-            <span className="font-hand text-base text-muted-foreground ml-1.5">
-              天
-            </span>
-          </p>
-          <p className="font-hand text-[11px] text-muted-foreground mt-1.5 tracking-wider">
-            最长 {COMBO.best} 天 · 留白也算节奏
-          </p>
-        </div>
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <span className="ink-tag font-hand text-[11px] leading-none">连续记录</span>
         <p
-          className="font-hand text-[10px] tracking-[0.4em] uppercase"
+          className="font-hand text-[10px] tracking-[0.35em] uppercase whitespace-nowrap"
           style={{ color: "hsl(var(--ink-faded))" }}
         >
           Last 14
         </p>
       </div>
 
-      {/* 灯笼串 — 等比例 SVG，居中显示 */}
-      <div className="w-full overflow-hidden">
+      <div className="flex items-end justify-between mb-3 gap-3">
+        <div>
+          <p className="font-serif-en text-4xl leading-none ink-bloom">
+            {COMBO.current}
+            <span className="font-hand text-base text-muted-foreground ml-1.5">天</span>
+          </p>
+          <p className="font-hand text-[11px] text-muted-foreground mt-1.5 tracking-wider">
+            最长 {COMBO.best} 天 · 留白也算节奏
+          </p>
+        </div>
+      </div>
+
+      <div className="w-full overflow-hidden rounded-sm border border-foreground/15 bg-background/20 px-2 py-2">
         <svg
           viewBox={`0 0 ${W} ${H}`}
           className="w-full h-auto block"
@@ -56,11 +44,11 @@ const StreakLanternCard = () => {
         >
           <defs>
             <filter id="streak-blur" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3" />
+              <feGaussianBlur stdDeviation="2.2" />
             </filter>
             <radialGradient id="streak-glow">
-              <stop offset="0%" stopColor="hsl(var(--gold-bright))" stopOpacity="0.95" />
-              <stop offset="60%" stopColor="hsl(var(--gold))" stopOpacity="0.4" />
+              <stop offset="0%" stopColor="hsl(var(--gold-bright))" stopOpacity="0.9" />
+              <stop offset="60%" stopColor="hsl(var(--gold))" stopOpacity="0.34" />
               <stop offset="100%" stopColor="hsl(var(--gold))" stopOpacity="0" />
             </radialGradient>
             <radialGradient id="streak-lantern" cx="50%" cy="40%">
@@ -70,7 +58,6 @@ const StreakLanternCard = () => {
             </radialGradient>
           </defs>
 
-          {/* 悬挂线：手绘弧线 */}
           <path
             d={`M ${padX} 18 Q ${W / 2} 28, ${W - padX} 18`}
             fill="none"
@@ -83,7 +70,7 @@ const StreakLanternCard = () => {
             const x = padX + ((W - padX * 2) / (total - 1)) * i;
             const t = i / (total - 1);
             const yLine = 18 + Math.sin(t * Math.PI) * 5;
-            const cy = yLine + 22; // 灯笼中心
+            const cy = yLine + 22;
             const lit = d === 1;
             return (
               <g
@@ -95,7 +82,6 @@ const StreakLanternCard = () => {
                   transformOrigin: `${x}px ${cy}px`,
                 }}
               >
-                {/* 挂绳 */}
                 <line
                   x1={x}
                   y1={yLine}
@@ -104,17 +90,15 @@ const StreakLanternCard = () => {
                   stroke="hsl(var(--ink) / 0.5)"
                   strokeWidth="0.5"
                 />
-                {/* 光晕 */}
                 {lit && (
                   <circle
                     cx={x}
                     cy={cy}
-                    r="14"
+                    r="11.5"
                     fill="url(#streak-glow)"
                     filter="url(#streak-blur)"
                   />
                 )}
-                {/* 灯顶 */}
                 <line
                   x1={x - 4}
                   y1={cy - 6}
@@ -123,7 +107,6 @@ const StreakLanternCard = () => {
                   stroke="hsl(var(--ink))"
                   strokeWidth="0.8"
                 />
-                {/* 灯身 */}
                 <ellipse
                   cx={x}
                   cy={cy}
@@ -133,7 +116,6 @@ const StreakLanternCard = () => {
                   stroke="hsl(var(--ink))"
                   strokeWidth="0.8"
                 />
-                {/* 灯底 */}
                 <line
                   x1={x - 4}
                   y1={cy + 6}
@@ -142,12 +124,11 @@ const StreakLanternCard = () => {
                   stroke="hsl(var(--ink))"
                   strokeWidth="0.8"
                 />
-                {/* 流苏 */}
                 <line
                   x1={x}
                   y1={cy + 6}
                   x2={x}
-                  y2={cy + 11}
+                  y2={cy + 10}
                   stroke={lit ? "hsl(var(--rust))" : "hsl(var(--ink) / 0.4)"}
                   strokeWidth="0.7"
                 />
@@ -160,7 +141,7 @@ const StreakLanternCard = () => {
       <style>{`
         @keyframes lanternBreath {
           0%, 100% { opacity: 1; }
-          50% { opacity: 0.78; }
+          50% { opacity: 0.8; }
         }
       `}</style>
     </section>
