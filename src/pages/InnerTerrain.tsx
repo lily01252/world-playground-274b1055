@@ -118,9 +118,9 @@ const InnerTerrain = () => {
                   cy="50%"
                   r="50%"
                 >
-                  <stop offset="0%" stopColor={auroraColor(r.category)} stopOpacity="0.55" />
-                  <stop offset="60%" stopColor={auroraColor(r.category)} stopOpacity="0.18" />
-                  <stop offset="100%" stopColor={auroraColor(r.category)} stopOpacity="0" />
+                  <stop offset="0%" stopColor={innerColor(r.category)} stopOpacity="0.55" />
+                  <stop offset="60%" stopColor={innerColor(r.category)} stopOpacity="0.18" />
+                  <stop offset="100%" stopColor={innerColor(r.category)} stopOpacity="0" />
                 </radialGradient>
               ))}
             </defs>
@@ -132,7 +132,7 @@ const InnerTerrain = () => {
                   cy={r.cy * 0.62}
                   r={r.r * 0.65}
                   fill="none"
-                  stroke={auroraColor(r.category)}
+                  stroke={innerColor(r.category)}
                   strokeWidth="0.18"
                   strokeDasharray="0.6 0.8"
                   opacity="0.5"
@@ -153,7 +153,7 @@ const InnerTerrain = () => {
               style={{
                 left: `${r.cx}%`,
                 top: `${r.cy}%`,
-                color: auroraColor(r.category),
+                color: innerColor(r.category),
                 textShadow: "0 1px 8px hsl(var(--inner-night-deep) / 0.9)",
               }}
             >
@@ -176,7 +176,7 @@ const InnerTerrain = () => {
 
           {/* 记录光点（心之灯） */}
           {RECORDS.filter((r) => r.innerPos).map((r) => {
-            const c = r.category ? auroraColor(r.category) : "hsl(var(--inner-lantern))";
+            const c = r.category ? innerColor(r.category) : "hsl(var(--inner-lantern))";
             return (
               <Lantern
                 key={r.id}
@@ -202,7 +202,7 @@ const InnerTerrain = () => {
                   width: 130,
                   height: 130,
                   background: `radial-gradient(circle, ${
-                    cat ? auroraColor(cat) : "hsl(var(--inner-lantern-glow))"
+                    cat ? innerColor(cat) : "hsl(var(--inner-lantern-glow))"
                   } 0%, transparent 65%)`,
                   animation: "litBurst 2s ease-out infinite",
                   opacity: 0.8,
@@ -211,9 +211,9 @@ const InnerTerrain = () => {
               <span
                 className="block w-4 h-4 rounded-full relative"
                 style={{
-                  background: cat ? auroraColor(cat) : "hsl(var(--inner-lantern-glow))",
+                  background: cat ? innerColor(cat) : "hsl(var(--inner-lantern-glow))",
                   boxShadow: `0 0 24px 6px ${
-                    cat ? auroraColor(cat) : "hsl(var(--inner-lantern))"
+                    cat ? innerColor(cat) : "hsl(var(--inner-lantern))"
                   }, 0 0 60px 12px hsl(var(--inner-lantern-glow) / 0.5)`,
                 }}
               />
@@ -222,9 +222,9 @@ const InnerTerrain = () => {
                 style={{
                   top: "100%",
                   background: "hsl(var(--inner-night) / 0.9)",
-                  color: cat ? auroraColor(cat) : "hsl(var(--inner-lantern-glow))",
+                  color: cat ? innerColor(cat) : "hsl(var(--inner-lantern-glow))",
                   border: `1px solid ${
-                    cat ? auroraColor(cat) : "hsl(var(--inner-lantern) / 0.6)"
+                    cat ? innerColor(cat) : "hsl(var(--inner-lantern) / 0.6)"
                   }`,
                 }}
               >
