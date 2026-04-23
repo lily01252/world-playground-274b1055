@@ -68,6 +68,32 @@
     --sidebar-accent-foreground: 30 78% 8%;
     --sidebar-border: 30 78% 8%;
     --sidebar-ring: 42 92% 41%;
+
+    /* —— 世界地图 · 夜空羊皮纸 调色 —— */
+    --map-night: 222 38% 9%;            /* 深夜底色 */
+    --map-night-deep: 224 42% 6%;       /* 更深的远景 */
+    --map-fog: 218 22% 22%;             /* 雾气中调 */
+    --map-fog-light: 214 18% 38%;       /* 雾气亮处 */
+    --map-grid: 200 20% 60%;            /* 网格线 */
+    --map-mountain-far: 220 25% 18%;    /* 远山 */
+    --map-mountain-mid: 28 22% 32%;     /* 中山（暖褐） */
+    --map-mountain-near: 32 38% 48%;    /* 近山（被点亮的暖光） */
+    --map-lantern: 38 92% 62%;          /* 灯台暖光 */
+    --map-lantern-glow: 42 100% 70%;    /* 灯台光晕 */
+    --map-text: 40 30% 88%;             /* 夜地图上的文字 */
+
+    /* —— 内心地图 · 极光夜空 调色 —— */
+    --inner-night: 252 36% 10%;         /* 深紫底 */
+    --inner-night-deep: 256 44% 6%;     /* 更深 */
+    --inner-fog: 248 28% 22%;           /* 雾 */
+    --inner-fog-light: 250 24% 38%;
+    --inner-grid: 270 30% 60%;
+    --inner-aurora-1: 168 70% 55%;      /* 极光青绿 */
+    --inner-aurora-2: 282 70% 65%;      /* 极光紫 */
+    --inner-aurora-3: 198 80% 60%;      /* 极光蓝 */
+    --inner-lantern: 280 90% 72%;       /* 心之灯紫 */
+    --inner-lantern-glow: 168 80% 70%;  /* 心之灯青 */
+    --inner-text: 270 25% 90%;
   }
 }
 
