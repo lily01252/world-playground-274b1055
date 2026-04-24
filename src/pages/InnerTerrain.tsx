@@ -260,7 +260,7 @@ const InnerTerrain = () => {
             </span>
 
             {/* —— 记录点：统一的小羊皮纸标签 —— */}
-            {RECORDS.filter((r) => r.innerPos).map((r) => {
+            {allRecords.filter((r) => r.innerPos).map((r) => {
               const c = r.category ? innerColor(r.category) : "hsl(var(--ink))";
               return (
                 <button
@@ -351,7 +351,7 @@ const InnerTerrain = () => {
         <div className="grid md:grid-cols-4 gap-3">
           {INNER_REGIONS.map((r) => {
             const m = CATEGORY_META[r.category];
-            const count = RECORDS.filter((rec) => rec.category === r.category).length;
+            const count = allRecords.filter((rec) => rec.category === r.category).length;
             return (
               <button
                 key={r.name}
@@ -379,7 +379,7 @@ const InnerTerrain = () => {
           {openCat && (() => {
             const m = CATEGORY_META[openCat];
             const region = INNER_REGIONS.find((r) => r.category === openCat);
-            const notes = RECORDS.filter((r) => r.category === openCat);
+            const notes = allRecords.filter((r) => r.category === openCat);
             return (
               <>
                 <DialogHeader>
