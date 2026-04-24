@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CATEGORY_META, INNER_REGIONS, RECORDS, type QuestCategory } from "@/data/world";
+import { useUserRecords } from "@/data/recordStore";
 import NightMapCanvas from "@/components/NightMapCanvas";
 import {
   Dialog,
