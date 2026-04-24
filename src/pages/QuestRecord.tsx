@@ -3,7 +3,8 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { CATEGORY_META, QUESTS } from "@/data/world";
+import { CATEGORY_META, QUESTS, type JourneyRecord } from "@/data/world";
+import { saveUserRecord } from "@/data/recordStore";
 import { toast } from "sonner";
 import StarTrailCelebration from "@/components/StarTrailCelebration";
 import {
