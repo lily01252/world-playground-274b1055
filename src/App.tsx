@@ -12,6 +12,12 @@ import Profile from "./pages/Profile";
 import Codex from "./pages/Codex";
 import QuestDetail from "./pages/QuestDetail";
 import QuestRecord from "./pages/QuestRecord";
+import Cover1 from "./pages/intro/Cover1";
+import Cover2 from "./pages/intro/Cover2";
+import Cover3 from "./pages/intro/Cover3";
+import Letter from "./pages/intro/Letter";
+import Login from "./pages/intro/Login";
+import Tower from "./pages/intro/Tower";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -23,6 +29,15 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* 叙事入口 */}
+          <Route path="/intro/1" element={<Cover1 />} />
+          <Route path="/intro/2" element={<Cover2 />} />
+          <Route path="/intro/3" element={<Cover3 />} />
+          <Route path="/letter" element={<Letter />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/tower" element={<Tower />} />
+
+          {/* 主应用 */}
           <Route element={<AppLayout />}>
             <Route path="/" element={<Today />} />
             <Route path="/goals" element={<Goals />} />
