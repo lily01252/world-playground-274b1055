@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CATEGORY_META, QUESTS, RECORDS, PLAYER } from "@/data/world";
 import { SOCIAL_QUESTS } from "@/data/goals";
@@ -20,11 +20,16 @@ import {
 } from "@/components/HandIcon";
 
 const Today = () => {
+  const navigate = useNavigate();
   // 首次到访引导至开篇叙事
   if (typeof window !== "undefined" && !sessionStorage.getItem("seenIntro")) {
     sessionStorage.setItem("seenIntro", "1");
     window.location.replace("/intro/1");
   }
+  const replayIntro = () => {
+    sessionStorage.removeItem("seenIntro");
+    navigate("/intro/1");
+  };
   const main = QUESTS[1];
   const sides = [QUESTS[0], QUESTS[2], QUESTS[4]];
   const recent = RECORDS.slice(0, 2);
@@ -38,6 +43,32 @@ const Today = () => {
 
   return (
     <article className="max-w-4xl mx-auto px-5 md:px-10 py-10 md:py-14">
+      {/* 回到开头 · 重温序章动画按钮 */}
+      <div className="mb-5 flex justify-end">
+        <button
+          onClick={replayIntro}
+          className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-sm font-serif-en text-xs tracking-[0.2em] transition-transform hover:-translate-y-0.5 active:translate-y-0"
+          style={{
+            background: "hsl(var(--ink))",
+            color: "hsl(var(--gold-bright))",
+            border: "1.5px solid hsl(var(--gold) / 0.7)",
+            boxShadow:
+              "0 3px 0 hsl(var(--ink-soft)), 0 0 16px hsl(var(--gold) / 0.35), inset 0 0 8px hsl(var(--gold) / 0.15)",
+          }}
+          aria-label="重温序章动画"
+        >
+          <span className="relative inline-block w-3 h-3">
+            <span
+              className="absolute inset-0 rounded-full animate-pulse"
+              style={{
+                background: "hsl(var(--gold-bright))",
+                boxShadow: "0 0 8px hsl(var(--gold-bright))",
+              }}
+            />
+          </span>
+          ✦ 回到开头 · 重温序章
+        </button>
+      </div>
       <header className="flex items-start justify-between mb-8">
         <div>
           <p className="font-hand text-base text-muted-foreground">{today}</p>
