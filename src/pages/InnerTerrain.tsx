@@ -20,6 +20,8 @@ const InnerTerrain = () => {
   const [showNew, setShowNew] = useState(false);
   const [phase, setPhase] = useState<"new" | "waxing" | "full">("waxing");
   const [openCat, setOpenCat] = useState<QuestCategory | null>(null);
+  const userRecs = useUserRecords();
+  const allRecords = useMemo(() => [...userRecs, ...RECORDS], [userRecs]);
 
   useEffect(() => {
     if (lit && lit.length === 2) {
