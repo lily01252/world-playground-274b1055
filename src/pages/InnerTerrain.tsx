@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CATEGORY_META, INNER_REGIONS, RECORDS, type QuestCategory } from "@/data/world";
+import { useUserRecords } from "@/data/recordStore";
 import NightMapCanvas from "@/components/NightMapCanvas";
 import {
   Dialog,
@@ -19,6 +20,8 @@ const InnerTerrain = () => {
   const [showNew, setShowNew] = useState(false);
   const [phase, setPhase] = useState<"new" | "waxing" | "full">("waxing");
   const [openCat, setOpenCat] = useState<QuestCategory | null>(null);
+  const userRecs = useUserRecords();
+  const allRecords = useMemo(() => [...userRecs, ...RECORDS], [userRecs]);
 
   useEffect(() => {
     if (lit && lit.length === 2) {
@@ -257,7 +260,7 @@ const InnerTerrain = () => {
             </span>
 
             {/* —— 记录点：统一的小羊皮纸标签 —— */}
-            {RECORDS.filter((r) => r.innerPos).map((r) => {
+            {allRecords.filter((r) => r.innerPos).map((r) => {
               const c = r.category ? innerColor(r.category) : "hsl(var(--ink))";
               return (
                 <button
@@ -348,7 +351,7 @@ const InnerTerrain = () => {
         <div className="grid md:grid-cols-4 gap-3">
           {INNER_REGIONS.map((r) => {
             const m = CATEGORY_META[r.category];
-            const count = RECORDS.filter((rec) => rec.category === r.category).length;
+            const count = allRecords.filter((rec) => rec.category === r.category).length;
             return (
               <button
                 key={r.name}
@@ -376,7 +379,7 @@ const InnerTerrain = () => {
           {openCat && (() => {
             const m = CATEGORY_META[openCat];
             const region = INNER_REGIONS.find((r) => r.category === openCat);
-            const notes = RECORDS.filter((r) => r.category === openCat);
+            const notes = allRecords.filter((r) => r.category === openCat);
             return (
               <>
                 <DialogHeader>
