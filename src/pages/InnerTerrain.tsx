@@ -2,6 +2,14 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CATEGORY_META, INNER_REGIONS, RECORDS, type QuestCategory } from "@/data/world";
 import NightMapCanvas from "@/components/NightMapCanvas";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { WeatherIcon, IconMapPin } from "@/components/HandIcon";
 
 // 内心地形图：羊皮纸水彩 · 一段叙事性的心智探索之旅
 const InnerTerrain = () => {
@@ -10,6 +18,7 @@ const InnerTerrain = () => {
   const cat = params.get("cat") as QuestCategory | null;
   const [showNew, setShowNew] = useState(false);
   const [phase, setPhase] = useState<"new" | "waxing" | "full">("waxing");
+  const [openCat, setOpenCat] = useState<QuestCategory | null>(null);
 
   useEffect(() => {
     if (lit && lit.length === 2) {
