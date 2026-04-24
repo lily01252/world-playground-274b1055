@@ -20,6 +20,11 @@ import {
 } from "@/components/HandIcon";
 
 const Today = () => {
+  // 首次到访引导至开篇叙事
+  if (typeof window !== "undefined" && !sessionStorage.getItem("seenIntro")) {
+    sessionStorage.setItem("seenIntro", "1");
+    window.location.replace("/intro/1");
+  }
   const main = QUESTS[1];
   const sides = [QUESTS[0], QUESTS[2], QUESTS[4]];
   const recent = RECORDS.slice(0, 2);
