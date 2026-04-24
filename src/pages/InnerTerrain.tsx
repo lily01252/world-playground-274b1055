@@ -2,6 +2,14 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CATEGORY_META, INNER_REGIONS, RECORDS, type QuestCategory } from "@/data/world";
 import NightMapCanvas from "@/components/NightMapCanvas";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { WeatherIcon, IconMapPin } from "@/components/HandIcon";
 
 // 内心地形图：羊皮纸水彩 · 一段叙事性的心智探索之旅
 const InnerTerrain = () => {
@@ -10,6 +18,7 @@ const InnerTerrain = () => {
   const cat = params.get("cat") as QuestCategory | null;
   const [showNew, setShowNew] = useState(false);
   const [phase, setPhase] = useState<"new" | "waxing" | "full">("waxing");
+  const [openCat, setOpenCat] = useState<QuestCategory | null>(null);
 
   useEffect(() => {
     if (lit && lit.length === 2) {
@@ -332,24 +341,100 @@ const InnerTerrain = () => {
           </NightMapCanvas>
         </div>
 
-        {/* 地形小档 */}
-        <div className="grid md:grid-cols-4 gap-3 mt-4">
+        {/* 地形小档 — 点击展开收纳的笔记 */}
+        <p className="font-hand text-xs text-muted-foreground mt-4 mb-2 px-1">
+          ↳ 点一处地形，展开收纳的笔记
+        </p>
+        <div className="grid md:grid-cols-4 gap-3">
           {INNER_REGIONS.map((r) => {
             const m = CATEGORY_META[r.category];
             const count = RECORDS.filter((rec) => rec.category === r.category).length;
             return (
-              <div key={r.name} className="ink-card p-4" style={{ borderColor: m.color }}>
+              <button
+                key={r.name}
+                onClick={() => setOpenCat(r.category)}
+                className="ink-card p-4 text-left hover:-translate-y-0.5 transition-transform cursor-pointer"
+                style={{ borderColor: m.color }}
+              >
                 <p className="font-hand text-sm" style={{ color: m.color }}>
                   {m.emoji} {r.name}
                 </p>
                 <p className="font-serif-en text-base mt-1">{m.label}</p>
                 <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{m.hand}</p>
-                <p className="font-hand text-xs mt-3">已积累 {count} 笔印记</p>
-              </div>
+                <p className="font-hand text-xs mt-3 inline-flex items-center gap-1">
+                  已积累 {count} 笔印记 <span className="opacity-60">→ 翻阅</span>
+                </p>
+              </button>
             );
           })}
         </div>
       </div>
+
+      {/* —— 笔记弹窗：按地形/分类收纳 —— */}
+      <Dialog open={openCat !== null} onOpenChange={(o) => !o && setOpenCat(null)}>
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto bg-card border-2 border-foreground rounded-sm">
+          {openCat && (() => {
+            const m = CATEGORY_META[openCat];
+            const region = INNER_REGIONS.find((r) => r.category === openCat);
+            const notes = RECORDS.filter((r) => r.category === openCat);
+            return (
+              <>
+                <DialogHeader>
+                  <p
+                    className="font-hand text-xs tracking-[0.3em] uppercase"
+                    style={{ color: m.color }}
+                  >
+                    {m.emoji} {region?.name}
+                  </p>
+                  <DialogTitle className="font-serif-en text-2xl">
+                    {m.label}
+                  </DialogTitle>
+                  <DialogDescription className="font-hand">
+                    {m.hand} · 共 {notes.length} 笔印记
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-3 mt-2">
+                  {notes.length === 0 && (
+                    <p className="text-sm text-muted-foreground italic font-hand">
+                      这片地形还很安静，等你下一次副本朝这里走。
+                    </p>
+                  )}
+                  {notes.map((n) => (
+                    <div
+                      key={n.id}
+                      className="border-l-2 pl-3 py-1"
+                      style={{ borderColor: m.color }}
+                    >
+                      <p className="font-hand text-xs text-muted-foreground mb-1 inline-flex items-center gap-1.5">
+                        {n.date}
+                        <span className="text-foreground/30">·</span>
+                        <WeatherIcon symbol={n.weather} size={11} />
+                        <span className="text-foreground/30">·</span>
+                        <IconMapPin size={11} /> {n.place}
+                        <span className="text-foreground/30">·</span>
+                        <span style={{ color: m.color }}>{n.feeling}</span>
+                      </p>
+                      <p className="text-sm text-foreground/90 leading-relaxed">
+                        {n.text}
+                      </p>
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {n.tags.map((t) => (
+                          <span key={t} className="ink-tag text-[10px]">
+                            #{t}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="font-hand text-xs mt-1.5 text-foreground/70">
+                        ↳ {n.echo}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
 
       {/* AI 叙事卡 */}
       <section className="ink-card p-6 mt-8 bg-secondary/40">
