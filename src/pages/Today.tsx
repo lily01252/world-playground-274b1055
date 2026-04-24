@@ -59,11 +59,10 @@ const Today = () => {
         >
           <span className="relative inline-block w-3 h-3">
             <span
-              className="absolute inset-0 rounded-full"
+              className="absolute inset-0 rounded-full animate-pulse"
               style={{
                 background: "hsl(var(--gold-bright))",
                 boxShadow: "0 0 8px hsl(var(--gold-bright))",
-                animation: "twinkle 1.6s ease-in-out infinite",
               }}
             />
           </span>
