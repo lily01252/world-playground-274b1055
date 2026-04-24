@@ -218,10 +218,10 @@ export const RECORDS: JourneyRecord[] = [
     questId: "q-005",
     category: "courage",
     place: "家",
-    text: "拒绝了周末加班的请求。说"不"的那一刻心跳很快，但说完整个人轻了。",
+    text: "拒绝了周末加班的请求。说「不」的那一刻心跳很快，但说完整个人轻了。",
     tags: ["边界建立", "勇气试炼场", "拒绝"],
     feeling: "明亮",
-    echo: "你的"不"，是给自己留的位置。",
+    echo: "你的「不」，是给自己留的位置。",
     innerPos: { x: 80, y: 32 },
   },
   {
