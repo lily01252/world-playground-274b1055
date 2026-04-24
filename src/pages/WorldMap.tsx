@@ -122,6 +122,26 @@ const WorldMap = () => {
             />
           ))}
 
+          {/* 用户新增的足迹灯台（按分类着色） */}
+          {userPlaces.map((p) => {
+            const meta = p.category ? CATEGORY_META[p.category as keyof typeof CATEGORY_META] : null;
+            const c = meta?.color ?? "hsl(var(--gold-bright))";
+            return (
+              <Lantern
+                key={`u-${p.name}`}
+                x={p.x}
+                y={p.y}
+                label={`${p.name} · 新`}
+                size={11}
+                color={c}
+                glow={c}
+                labelColor="hsl(var(--night-text) / 0.95)"
+                labelBg="hsl(var(--night-panel) / 0.78)"
+                labelBorder={c}
+              />
+            );
+          })}
+
           {/* 路径连线 */}
           <svg
             viewBox="0 0 100 100"
