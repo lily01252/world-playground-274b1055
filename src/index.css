@@ -238,4 +238,39 @@
     0% { transform: scaleX(0); }
     100% { transform: scaleX(1); }
   }
+
+  /* 星光闪烁 → 缩小 → 像流星划向右上方星之塔 */
+  @keyframes meteorToTower {
+    0%   { transform: translate(0,0) scale(1);   opacity: 0; filter: drop-shadow(0 0 6px hsl(var(--gold))); }
+    8%   { opacity: 1; transform: translate(0,0) scale(1.4); }
+    18%  { opacity: 1; transform: translate(0,0) scale(0.8); }
+    100% { opacity: 0; transform: translate(60vw, -70vh) scale(0.2);
+           filter: drop-shadow(0 0 14px hsl(var(--gold-bright))); }
+  }
+
+  .meteor-to-tower {
+    position: absolute;
+    left: 18%;
+    bottom: 22%;
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background: hsl(var(--gold-bright));
+    box-shadow: 0 0 20px 4px hsl(var(--gold) / 0.9);
+    pointer-events: none;
+    z-index: 5;
+    animation: meteorToTower 5.5s ease-in 1s infinite;
+  }
+  .meteor-to-tower::after {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    width: 80px;
+    height: 1.5px;
+    background: linear-gradient(to left, hsl(var(--gold-bright)), transparent);
+    transform: translateY(-50%) rotate(35deg);
+    transform-origin: right center;
+    opacity: 0.85;
+  }
 }
