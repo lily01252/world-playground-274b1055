@@ -58,6 +58,23 @@ const QuestRecord = () => {
       toast("写一个字也好，或者点跳过。");
       return;
     }
+    // 持久化：让"外部世界"和"内心地形"立刻同步显示这一笔
+    const weatherList = ["☀️", "⛅", "🌧️", "🌙"] as const;
+    const newRec: JourneyRecord = {
+      id: `u-${Date.now()}`,
+      date: new Date().toISOString().slice(0, 10),
+      weather: weatherList[new Date().getHours() >= 19 ? 3 : 0],
+      questId: quest.id,
+      category: quest.category,
+      place: place || "未命名地点",
+      text,
+      tags: [CATEGORY_META[quest.category].label, quest.title],
+      feeling,
+      echo: mockEcho(),
+      mapPos: place ? { x: litPos.x, y: litPos.y } : undefined,
+      innerPos: { x: innerPos.x, y: innerPos.y },
+    };
+    saveUserRecord(newRec);
     setCelebrating(true);
   };
 
