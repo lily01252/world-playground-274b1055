@@ -251,7 +251,7 @@ const WorldMap = () => {
                   className="font-hand text-xl md:text-2xl mx-0.5"
                   style={{ color: "hsl(var(--gold-bright))" }}
                 >
-                  {MAP_PLACES.length}
+                  {MAP_PLACES.length + userPlaces.length}
                 </span>{" "}
                 处 ·{" "}
                 <span style={{ color: "hsl(var(--night-text-soft))" }}>
@@ -283,7 +283,7 @@ const WorldMap = () => {
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
               已点亮
             </p>
-            <p className="font-hand text-lg">{MAP_PLACES.length} 座灯台</p>
+            <p className="font-hand text-lg">{MAP_PLACES.length + userPlaces.length} 座灯台</p>
           </div>
           <div className="dashed-frame p-3">
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -296,7 +296,7 @@ const WorldMap = () => {
               最近一次
             </p>
             <p className="font-hand text-lg">
-              {RECORDS[0].date} · {RECORDS[0].place}
+              {allRecords[0].date} · {allRecords[0].place}
             </p>
           </div>
           <div className="dashed-frame p-3">
