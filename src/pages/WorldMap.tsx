@@ -1,12 +1,27 @@
 import { Link, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CATEGORY_META, MAP_PLACES, RECORDS } from "@/data/world";
+import { useUserRecords } from "@/data/recordStore";
 import NightMapCanvas, { Lantern } from "@/components/NightMapCanvas";
 import { IconCompass, IconMapPin, IconArrowRight } from "@/components/HandIcon";
 
 // 外部世界地图：深蓝夜空 + low-poly 山脉 + 流动星云 + 闪烁灯台
 const WorldMap = () => {
-  const litRecords = RECORDS.filter((r) => r.mapPos);
+  const userRecs = useUserRecords();
+  // 合并：内置 demo + 用户新增（带 mapPos 才能落在地图上）
+  const allRecords = useMemo(() => [...userRecs, ...RECORDS], [userRecs]);
+  const litRecords = allRecords.filter((r) => r.mapPos);
+  // 用户新增的"地点灯台"（按 place 名去重，附带分类色）
+  const userPlaces = useMemo(() => {
+    const map = new Map<string, { name: string; x: number; y: number; count: number; category?: string }>();
+    userRecs.forEach((r) => {
+      if (!r.mapPos) return;
+      const prev = map.get(r.place);
+      if (prev) prev.count += 1;
+      else map.set(r.place, { name: r.place, x: r.mapPos.x, y: r.mapPos.y, count: 1, category: r.category });
+    });
+    return Array.from(map.values());
+  }, [userRecs]);
   const [params] = useSearchParams();
   const lit = params.get("lit")?.split(",");
   const newPlace = params.get("place");
