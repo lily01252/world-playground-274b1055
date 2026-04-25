@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { CATEGORY_META, PLAYER, RECORDS, MAP_PLACES } from "@/data/world";
+import { deleteUserRecord, useUserRecords } from "@/data/recordStore";
 import { GOALS } from "@/data/goals";
 import {
   PLAYER_TRAITS,
@@ -49,6 +50,8 @@ const AchievementIcon = ({ id }: { id: string }) => {
 };
 
 const Profile = () => {
+  const userRecords = useUserRecords();
+  const allRecords = [...userRecords, ...RECORDS];
   const totalMilestones = GOALS.reduce((s, g) => s + g.milestones.length, 0);
   const doneMilestones = GOALS.reduce(
     (s, g) => s + g.milestones.filter((m) => m.done).length,
@@ -57,7 +60,7 @@ const Profile = () => {
 
   const categoryCounts = (
     Object.keys(CATEGORY_META) as (keyof typeof CATEGORY_META)[]
-  ).map((k) => ({ key: k, count: RECORDS.filter((r) => r.category === k).length }));
+  ).map((k) => ({ key: k, count: allRecords.filter((r) => r.category === k).length }));
 
   const currentStage = [...AVATAR_STAGES]
     .reverse()
@@ -276,7 +279,7 @@ const Profile = () => {
         </div>
         <div className="dashed-frame p-4">
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground">记录</p>
-          <p className="font-hand text-xl mt-1">{RECORDS.length} 笔</p>
+          <p className="font-hand text-xl mt-1">{allRecords.length} 笔</p>
         </div>
         <div className="dashed-frame p-4">
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground">目标</p>
@@ -382,11 +385,12 @@ const Profile = () => {
         </Link>
       </h3>
       <div className="grid md:grid-cols-2 gap-3">
-        {RECORDS.map((r) => {
+        {allRecords.map((r) => {
           const m = r.category ? CATEGORY_META[r.category] : null;
+          const canDelete = userRecords.some((u) => u.id === r.id);
           return (
             <div key={r.id} className="ink-card p-4">
-              <div className="flex items-baseline justify-between mb-1">
+              <div className="flex items-start justify-between gap-2 mb-1">
                 <p className="font-hand text-xs text-muted-foreground inline-flex items-center gap-1.5">
                   {r.date}
                   <span className="text-foreground/30">·</span>
@@ -394,11 +398,24 @@ const Profile = () => {
                   <span className="text-foreground/30">·</span>
                   <IconMapPin size={11} /> {r.place}
                 </p>
-                {m && r.category && (
-                  <span style={{ color: m.color }}>
-                    <CategoryIcon category={r.category} size={12} />
-                  </span>
-                )}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {m && r.category && (
+                    <span style={{ color: m.color }}>
+                      <CategoryIcon category={r.category} size={12} />
+                    </span>
+                  )}
+                  {canDelete && (
+                    <button
+                      type="button"
+                      onClick={() => deleteUserRecord(r.id)}
+                      className="w-7 h-7 inline-flex items-center justify-center rounded-sm border border-foreground/40 bg-secondary/50 font-hand text-sm text-muted-foreground shadow-[1px_1px_0_hsl(var(--ink)/0.18)] transition-colors hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
+                      aria-label="删除这篇日记"
+                      title="删除这篇日记"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
               </div>
               <p className="text-sm text-foreground/85 leading-relaxed line-clamp-2 mb-2">
                 {r.text}
