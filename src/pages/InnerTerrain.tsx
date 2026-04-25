@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { CATEGORY_META, INNER_REGIONS, RECORDS, type QuestCategory } from "@/data/world";
-import { useUserRecords } from "@/data/recordStore";
+import { deleteUserRecord, useUserRecords } from "@/data/recordStore";
 import NightMapCanvas from "@/components/NightMapCanvas";
 import {
   Dialog,
@@ -402,36 +402,52 @@ const InnerTerrain = () => {
                       这片地形还很安静，等你下一次副本朝这里走。
                     </p>
                   )}
-                  {notes.map((n) => (
-                    <div
-                      key={n.id}
-                      className="border-l-2 pl-3 py-1"
-                      style={{ borderColor: m.color }}
-                    >
-                      <p className="font-hand text-xs text-muted-foreground mb-1 inline-flex items-center gap-1.5">
-                        {n.date}
-                        <span className="text-foreground/30">·</span>
-                        <WeatherIcon symbol={n.weather} size={11} />
-                        <span className="text-foreground/30">·</span>
-                        <IconMapPin size={11} /> {n.place}
-                        <span className="text-foreground/30">·</span>
-                        <span style={{ color: m.color }}>{n.feeling}</span>
-                      </p>
-                      <p className="text-sm text-foreground/90 leading-relaxed">
-                        {n.text}
-                      </p>
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        {n.tags.map((t) => (
-                          <span key={t} className="ink-tag text-[10px]">
-                            #{t}
-                          </span>
-                        ))}
+                  {notes.map((n) => {
+                    const canDelete = userRecs.some((u) => u.id === n.id);
+                    return (
+                      <div
+                        key={n.id}
+                        className="border-l-2 pl-3 py-1"
+                        style={{ borderColor: m.color }}
+                      >
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <p className="font-hand text-xs text-muted-foreground inline-flex items-center gap-1.5 flex-wrap">
+                            {n.date}
+                            <span className="text-foreground/30">·</span>
+                            <WeatherIcon symbol={n.weather} size={11} />
+                            <span className="text-foreground/30">·</span>
+                            <IconMapPin size={11} /> {n.place}
+                            <span className="text-foreground/30">·</span>
+                            <span style={{ color: m.color }}>{n.feeling}</span>
+                          </p>
+                          {canDelete && (
+                            <button
+                              type="button"
+                              onClick={() => deleteUserRecord(n.id)}
+                              className="w-7 h-7 inline-flex items-center justify-center rounded-sm border border-foreground/40 bg-secondary/50 font-hand text-sm text-muted-foreground shadow-[1px_1px_0_hsl(var(--ink)/0.18)] transition-colors hover:bg-destructive hover:text-destructive-foreground hover:border-destructive shrink-0"
+                              aria-label="删除这篇日记"
+                              title="删除这篇日记"
+                            >
+                              ×
+                            </button>
+                          )}
+                        </div>
+                        <p className="text-sm text-foreground/90 leading-relaxed">
+                          {n.text}
+                        </p>
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          {n.tags.map((t) => (
+                            <span key={t} className="ink-tag text-[10px]">
+                              #{t}
+                            </span>
+                          ))}
+                        </div>
+                        <p className="font-hand text-xs mt-1.5 text-foreground/70">
+                          ↳ {n.echo}
+                        </p>
                       </div>
-                      <p className="font-hand text-xs mt-1.5 text-foreground/70">
-                        ↳ {n.echo}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             );

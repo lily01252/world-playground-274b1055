@@ -24,6 +24,12 @@ export const saveUserRecord = (rec: JourneyRecord) => {
   window.dispatchEvent(new Event(EVT));
 };
 
+export const deleteUserRecord = (id: string) => {
+  const next = loadUserRecords().filter((r) => r.id !== id);
+  localStorage.setItem(KEY, JSON.stringify(next));
+  window.dispatchEvent(new Event(EVT));
+};
+
 // React hook：响应式获取所有用户提交记录
 export const useUserRecords = (): JourneyRecord[] => {
   const [list, setList] = useState<JourneyRecord[]>(() => loadUserRecords());
